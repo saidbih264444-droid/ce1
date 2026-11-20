@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CE1 en Poche</title>
+<meta name="description" content="Révisions CE1 en français avec explications en arabe, exercices corrigés et examen blanc. 10 minutes par leçon.">
+<meta property="og:title" content="CE1 en Poche">
+<meta property="og:description" content="10 minutes par leçon. Le cours en français, l'explication en arabe, des exercices corrigés et un examen blanc.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Cairo:wght@500;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Page d'accueil à une colonne : titre, trois matières, mode d'emploi en 3 étapes, contact écoles. */
+:root{
+  --bg:#EEF5F9;--surface:#FFFFFF;--ink:#15303D;--muted:#5B7280;--line:#D3E2EA;
+  --g:#1E9E6A;--gbg:#DDF3E9;--b:#2C78D2;--bbg:#DEEAFA;--p:#D63F7E;--pbg:#FBE1EC;
+  --sun:#F4B72E;--ar:#0F5C7A;--wa:#178A45;--on:#FFFFFF;
+  --fd:'Baloo 2','Trebuchet MS',system-ui,sans-serif;--fb:'Nunito',system-ui,'Segoe UI',sans-serif;--fa:'Cairo','Noto Naskh Arabic','Segoe UI',Tahoma,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1C24;--surface:#182933;--ink:#E6F0F5;--muted:#9FB5C2;--line:#2A404D;
+  --g:#46C592;--gbg:#17372C;--b:#6AA8F0;--bbg:#1B3050;--p:#F0689D;--pbg:#3D1F2C;
+  --sun:#F4C45A;--ar:#8FD3F0;--wa:#1FA855;color-scheme:dark}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 18px/1.55 var(--fb);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:env(safe-area-inset-top,0px) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:780px;margin:0 auto}
+h1,h2,h3{font-family:var(--fd);line-height:1.15;margin:0;text-wrap:balance}
+.ar{font-family:var(--fa);color:var(--ar);direction:rtl;text-align:right;line-height:1.75;font-weight:500}
+a{color:inherit}
+a:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}
+.brand{font-family:var(--fd);font-weight:800;font-size:1.35rem;display:flex;align-items:center;gap:8px}
+.brand i{font-style:normal;background:var(--g);color:#fff;border-radius:10px;padding:0 9px;font-size:1.05rem}
+.chip{font-weight:800;font-size:.85rem;background:var(--gbg);color:var(--g);border-radius:99px;padding:4px 12px}
+.hero{padding:34px 0 10px;display:grid;gap:10px}
+.hero h1{font-size:clamp(2.3rem,9vw,3.6rem)}
+.hero .lead{font-family:var(--fd);font-weight:600;font-size:clamp(1.3rem,5vw,1.7rem);margin:0;color:var(--g)}
+.hero .ar.big{font-size:clamp(1.2rem,4.6vw,1.5rem);font-weight:700;margin:0}
+.hero p.pain{margin:10px 0 0;max-width:60ch}
+section{margin-top:34px}
+h2{font-size:1.45rem;margin-bottom:12px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+h2 .ar{font-size:1.1rem;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{display:flex;flex-direction:column;gap:4px;text-decoration:none;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px;min-width:0;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px)}
+.card .em{font-size:2.2rem;line-height:1}
+.card h3{font-size:1.25rem;margin-top:6px}
+.card .go{margin-top:auto;padding-top:10px;font-weight:800;font-size:.95rem}
+.card.g{border-color:var(--g)}.card.g .go{color:var(--g)}
+.card.b{border-color:var(--b)}.card.b .go{color:var(--b)}
+.card.p{border-color:var(--p)}.card.p .go{color:var(--p)}
+.steps{display:grid;gap:12px;counter-reset:s;padding:0;margin:0;list-style:none}
+.steps li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--fd);font-weight:800;font-size:1.3rem;width:40px;height:40px;border-radius:50%;background:var(--sun);color:#15303D;display:grid;place-items:center}
+.steps b{font-family:var(--fd);font-size:1.15rem}
+.steps p{margin:0}
+.box{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:10px;justify-self:start;background:var(--wa);color:var(--on);text-decoration:none;font-weight:800;border-radius:14px;padding:12px 20px;min-height:52px}
+.btn:hover{filter:brightness(1.08)}
+.num{font-variant-numeric:tabular-nums;font-weight:800;direction:ltr;unicode-bidi:isolate}
+.note{color:var(--muted);font-size:.95rem}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;display:grid;gap:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand"><i>CE1</i> en Poche</span>
+    <span class="chip">10 min par leçon</span>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h1>CE1 en Poche</h1>
+      <p class="lead">10 minutes par leçon.</p>
+      <p class="ar big" lang="ar" dir="rtl">CE1 في جيبك، في 10 دقايق</p>
+      <p class="pain">Entre le travail et les devoirs, on n'a pas toujours le temps de tout reprendre. Votre enfant révise, avec le cours en français et l'explication en arabe. Vous suivez sans tout recommencer.</p>
+      <p class="ar" lang="ar" dir="rtl">بين الخدمة والواجبات، ما كيكونش دايما الوقت باش نعاودو كلشي مع ولدنا. هو يراجع بالدرس بالفرنسية والشرح بالعربية، وأنتم تتبعو بلا تعب.</p>
+    </div>
+
+    <section aria-labelledby="mat">
+      <h2 id="mat">Choisissez une matière <span class="ar" lang="ar" dir="rtl">اختاروا المادة</span></h2>
+      <div class="grid">
+        <a class="card g" href="sciences.html"><span class="em" aria-hidden="true">🔬</span><h3>Sciences</h3><span class="ar" lang="ar" dir="rtl">العلوم</span><span class="note">Les sens, le corps, l'alimentation, les dents.</span><span class="go">Ouvrir →</span></a>
+        <a class="card b" href="francais.html"><span class="em" aria-hidden="true">📘</span><h3>Français</h3><span class="ar" lang="ar" dir="rtl">اللغة الفرنسية</span><span class="note">Grammaire, conjugaison, orthographe, vocabulaire.</span><span class="go">Ouvrir →</span></a>
+        <a class="card p" href="examen.html"><span class="em" aria-hidden="true">📝</span><h3>Examen de sciences</h3><span class="ar" lang="ar" dir="rtl">امتحان العلوم</span><span class="note">Examen blanc : la correction et la note à la fin.</span><span class="go">Passer l'examen →</span></a>
+      </div>
+    </section>
+
+    <section aria-labelledby="how">
+      <h2 id="how">Comment ça marche <span class="ar" lang="ar" dir="rtl">كيفاش كيخدم</span></h2>
+      <ol class="steps">
+        <li><div><b>Je lis la leçon</b><p>Le cours en français, avec l'explication en arabe et des exemples.</p><p class="ar" lang="ar" dir="rtl">الدرس بالفرنسية مع الشرح بالعربية وأمثلة.</p></div></li>
+        <li><div><b>Je m'entraîne</b><p>Des exercices corrigés tout de suite, avec une explication si je me trompe.</p><p class="ar" lang="ar" dir="rtl">تمارين مصحّحة فالحين مع شرح إلا غلطت.</p></div></li>
+        <li><div><b>Je teste</b><p>Un examen blanc donne une note et dit quelles leçons revoir.</p><p class="ar" lang="ar" dir="rtl">امتحان تجريبي كيعطي النقطة وكيقول شنو الدروس اللي خاصني نعاود.</p></div></li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="ecoles">
+      <h2 id="ecoles">Écoles et enseignants <span class="ar" lang="ar" dir="rtl">المدارس والأساتذة</span></h2>
+      <div class="box">
+        <p style="margin:0">Vous dirigez une école ou vous enseignez en CE1 ? Écrivez-nous pour essayer l'application avec une classe.</p>
+        <p class="ar" style="margin:0" lang="ar" dir="rtl">واش كتسير مدرسة ولا كتدرّس CE1؟ كتبو لينا باش نجربو التطبيق مع قسم.</p>
+        <a class="btn" href="https://wa.me/212635593579?text=Bonjour%2C%20je%20vous%20%C3%A9cris%20depuis%20CE1%20en%20Poche." target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
+        <span class="note">WhatsApp : <span class="num">+212 6 35 59 35 79</span></span>
+      </div>
+    </section>
+
+    <section aria-labelledby="test">
+      <h2 id="test">Une version en test <span class="ar" lang="ar" dir="rtl">نسخة تجريبية</span></h2>
+      <p style="margin:0;max-width:60ch">CE1 en Poche est en cours de test auprès de familles. Les leçons suivent le programme de CE1 et les exercices sont réécrits. Dites-nous ce qui manque ou ce qui est difficile : vos retours nous aident à l'améliorer.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span>CE1 en Poche</span>
+    <span>Les exercices sont créés pour la révision à la maison. Ils ne remplacent pas l'enseignant.</span>
+  </footer>
+</div>
+</body>
+</html>

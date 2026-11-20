@@ -1,0 +1,599 @@
+<title>Sciences CE1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Cairo:wght@500;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: carnet d'école. Accueil en grille de séances par unité, leçon en une colonne qui défile, exercices en cartes. */
+:root{
+  --bg:#EEF5F9;--surface:#FFFFFF;--ink:#15303D;--muted:#5B7280;--line:#D3E2EA;
+  --u0:#2C78D2;--u0bg:#DEEAFA;--u1:#1E9E6A;--u1bg:#DDF3E9;--u2:#D63F7E;--u2bg:#FBE1EC;
+  --ok:#1E9E6A;--okbg:#DDF3E9;--bad:#D6453D;--badbg:#FBE4E2;--sun:#F4B72E;--ar:#0F5C7A;
+  --fd:'Baloo 2','Trebuchet MS',system-ui,sans-serif;--fb:'Nunito',system-ui,'Segoe UI',sans-serif;--fa:'Cairo','Noto Naskh Arabic','Segoe UI',Tahoma,sans-serif;
+  --acc:var(--u0);--accbg:var(--u0bg);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1C24;--surface:#182933;--ink:#E6F0F5;--muted:#9FB5C2;--line:#2A404D;
+  --u0:#6AA8F0;--u0bg:#1B3050;--u1:#46C592;--u1bg:#17372C;--u2:#F0689D;--u2bg:#3D1F2C;
+  --ok:#46C592;--okbg:#17372C;--bad:#F0766E;--badbg:#3F2220;--sun:#F4C45A;--ar:#8FD3F0;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1C24;--surface:#182933;--ink:#E6F0F5;--muted:#9FB5C2;--line:#2A404D;
+  --u0:#6AA8F0;--u0bg:#1B3050;--u1:#46C592;--u1bg:#17372C;--u2:#F0689D;--u2bg:#3D1F2C;
+  --ok:#46C592;--okbg:#17372C;--bad:#F0766E;--badbg:#3F2220;--sun:#F4C45A;--ar:#8FD3F0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:500 18px/1.5 var(--fb);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:860px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,circle:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.ar{font-family:var(--fa);color:var(--ar);direction:rtl;text-align:right;font-weight:500;line-height:1.7}
+.bi{display:flex;flex-direction:column;gap:0;min-width:0}
+body.noar .ar{display:none}
+h1,h2,h3{font-family:var(--fd);line-height:1.15;margin:0;text-wrap:balance}
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.brand{font-family:var(--fd);font-weight:800;font-size:1.3rem;color:var(--ink);text-decoration:none;margin-inline-end:auto;display:flex;align-items:center;gap:8px}
+.brand i{font-style:normal;background:var(--u1);color:#fff;border-radius:10px;padding:0 9px;font-size:1rem}
+.pill{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 14px;min-height:40px;font-weight:800;font-size:.9rem}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* home */
+.hero{padding:24px 0 8px;display:grid;gap:6px}
+.hero h1{font-size:clamp(2rem,7vw,3rem)}
+.hero .sub{color:var(--muted)}
+.meter{height:12px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:12px}
+.meter b{display:block;height:100%;background:var(--u1);border-radius:99px;transition:width .5s}
+.unit{margin-top:30px}
+.unit h2{font-size:1.35rem;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.unit h2 span.tag{font-size:.8rem;font-family:var(--fb);font-weight:800;background:var(--accbg);color:var(--acc);padding:2px 10px;border-radius:8px;letter-spacing:.04em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}
+.card{display:flex;flex-direction:column;gap:6px;text-align:start;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px;text-decoration:none;color:inherit;min-width:0;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--acc)}
+.card .em{font-size:2rem;line-height:1}
+.card .n{font-size:.78rem;font-weight:800;color:var(--acc);letter-spacing:.05em;text-transform:uppercase}
+.card h3{font-size:1.1rem}
+.stars{font-size:1.05rem;letter-spacing:2px;color:var(--sun);margin-top:auto}
+.stars .off{color:var(--line)}
+.soon{border-style:dashed;opacity:.75}
+.defi{margin-top:30px;background:var(--ink);color:var(--bg);border-radius:20px;padding:20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;text-decoration:none}
+.defi h2{font-size:1.5rem}.defi .ar{color:var(--sun)}
+.defi .go{margin-inline-start:auto;background:var(--sun);color:#15303D;border-radius:12px;padding:10px 18px;font-weight:800}
+/* lesson */
+.lesson{--pad:18px}
+.back{display:inline-flex;margin:16px 0 4px;color:var(--muted);font-weight:800;text-decoration:none;min-height:40px;align-items:center}
+.lh{background:var(--accbg);border-radius:22px;padding:20px;display:flex;gap:16px;align-items:center}
+.lh .em{font-size:3.2rem;line-height:1}
+.lh .n{font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
+.lh h1{font-size:clamp(1.5rem,5.5vw,2.1rem);margin:2px 0}
+.sec{margin-top:28px}
+.sec>h2{font-size:1.4rem;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:10px}
+.sec>h2 .ar{font-size:1.15rem;font-weight:700}
+.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
+.box .lab{font-weight:800;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:var(--acc);display:flex;justify-content:space-between;gap:8px}
+.learn{display:grid;gap:10px}
+.learn .box{border-inline-start:6px solid var(--acc)}
+.words{display:flex;flex-wrap:wrap;gap:10px}
+.word{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:8px 14px;min-height:56px}
+.word:hover{border-color:var(--acc)}
+.word .sp{font-size:1.1rem}
+.exs{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.ex{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:2px;justify-items:start;min-width:0}
+.ex .e{font-size:2rem;line-height:1.1}
+.ex .t{font-weight:800;margin-top:4px;overflow-wrap:anywhere}
+.chip{display:inline-block;margin-top:6px;font-size:.8rem;font-weight:800;background:var(--accbg);color:var(--acc);border-radius:8px;padding:1px 10px}
+.chip.a{background:var(--okbg);color:var(--ok)}.chip.b{background:var(--badbg);color:var(--bad)}
+.note{border-radius:16px;padding:14px 16px;background:var(--surface);border:2px dashed var(--line);display:grid;gap:2px}
+.note .lab{font-family:var(--fd);font-weight:800;font-size:1.1rem}
+.note.warn{border-color:var(--bad)}.note.fact{border-color:var(--sun)}
+.figbox{display:grid;grid-template-columns:minmax(140px,220px) 1fr;gap:16px;align-items:center}
+.figbox svg{width:100%;height:auto;max-height:380px}
+.figbox .cap{min-height:3.6em}
+.fig line,.fig circle.head{stroke:var(--ink);stroke-width:5;stroke-linecap:round;fill:none}
+.fig .j{fill:var(--acc);stroke:var(--surface);stroke-width:3;cursor:pointer;transition:r .12s}
+.fig .j:hover{r:12}
+.fig .j.on{fill:var(--sun)}
+.fig .j.ok{fill:var(--ok)}
+/* exercises */
+.xc{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:12px;margin-bottom:14px}
+.xc.fin{border-color:var(--ok)}
+.xc .k{font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.xc .p{font-weight:800;font-size:1.1rem}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:8px 16px;min-height:52px;text-align:start;min-width:0}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad);opacity:.7}
+.opt:disabled{cursor:default}
+.fb{min-height:0}
+.fb .m{border-radius:12px;padding:10px 14px}
+.fb .m.ok{background:var(--okbg);color:var(--ink)}
+.fb .m.bad{background:var(--badbg);color:var(--ink)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row.done{opacity:.95}
+.row .lab{display:flex;gap:10px;align-items:center;min-width:0}
+.row .lab .e{font-size:1.7rem}
+.row .opts{justify-content:flex-end;gap:8px}
+.row .opt{min-height:44px;padding:4px 12px;font-size:.95rem}
+@media (max-width:560px){.row{grid-template-columns:1fr}.row .opts{justify-content:flex-start}.tabs2,.figbox{grid-template-columns:1fr}}
+.result{text-align:center;display:grid;gap:8px;justify-items:center;background:var(--accbg);border-radius:22px;padding:24px 16px}
+.result .big{font-size:2.6rem;letter-spacing:6px;color:var(--sun)}
+.result h2{font-size:1.7rem}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800;text-decoration:none;min-height:48px;display:inline-flex;align-items:center}
+.btn.alt{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="#home"><i>CE1</i> Sciences</a>
+    <button class="pill" id="arBtn" type="button" aria-pressed="true">عربي</button>
+  </div>
+  <main id="app"></main>
+</div>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const h=(tag,props,...kids)=>{const e=document.createElement(tag);for(const k in props||{}){const v=props[k];if(k==='class')e.className=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v);}kids.flat(9).forEach(c=>{if(c==null||c===false)return;e.append(c.nodeType?c:document.createTextNode(c));});return e;};
+const sp=s=>s.split('|');
+const bi=(fr,ar,cls)=>h('div',{class:'bi '+(cls||'')},h('span',{class:'fr'},fr),ar?h('span',{class:'ar',lang:'ar',dir:'rtl'},ar):null);
+const biS=s=>{const [f,a]=sp(s);return bi(f,a)};
+const store={get(){try{return JSON.parse(localStorage.getItem('sciences-ce1')||'{}')}catch(e){return{}}},set(o){try{localStorage.setItem('sciences-ce1',JSON.stringify(o))}catch(e){}}};
+const speak=(t,l)=>{try{const u=new SpeechSynthesisUtterance(t);u.lang=l||'fr-FR';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
+const vf=(p,pa,truth,w)=>({t:'q',p,pa,o:['Vrai|صحيح','Faux|خطأ'],a:truth?0:1,w});
+const J={cou:['Le cou','العنق'],epaule:["L'épaule",'الكتف'],coude:['Le coude','المرفق'],poignet:['Le poignet','المعصم'],hanche:['La hanche','الورك'],genou:['Le genou','الركبة'],cheville:['La cheville','الكاحل']};
+const SENS5=['La vue|البصر','L\'ouïe|السمع','L\'odorat|الشم','Le goût|الذوق','Le toucher|اللمس'];
+
+/* ---------- contenu du cahier ---------- */
+const LESSONS=[
+{id:'diag',u:0,n:'Semaine 1 · Évaluation diagnostique',em:'🧠',fr:'Je révise : les 5 sens',ar:'أراجع: الحواس الخمس',
+ q:['Quels sont mes 5 sens et à quoi servent-ils ?','ما هي حواسي الخمس وما فائدتها؟'],
+ s:['Chaque sens a un organe.','لكل حاسة عضو خاص بها.'],
+ learn:[['J\'ai 5 sens : la vue, l\'ouïe, l\'odorat, le goût et le toucher.','لدي خمس حواس: البصر والسمع والشم والذوق واللمس.'],
+        ['Chaque sens a son organe : l\'œil, l\'oreille, le nez, la langue et la peau.','لكل حاسة عضوها: العين والأذن والأنف واللسان والجلد.']],
+ words:[['Les sens|الحواس'],['Organe|عضو'],['Piéton|راجل'],['Repas|وجبة']],
+ ex:[['👁️','La vue|البصر','avec l\'œil|بالعين'],['👂','L\'ouïe|السمع','avec l\'oreille|بالأذن'],['👃','L\'odorat|الشم','avec le nez|بالأنف'],['👅','Le goût|الذوق','avec la langue|باللسان'],['✋','Le toucher|اللمس','avec la peau|بالجلد']],
+ ex2:[['🟢','Feu vert|الضوء الأخضر','Je traverse|أعبر','a'],['🟠','Feu orange|الضوء البرتقالي','Je fais attention|أنتبه',''],['🔴','Feu rouge|الضوء الأحمر','Je m\'arrête|أتوقف','b']],
+ ex2title:['Je suis piéton','أنا راجل (أمشي في الطريق)'],
+ talk:['Montre-moi ton nez, tes yeux, tes oreilles. Quel sens utilise chaque organe ?','اطلب منه أن يشير إلى أنفه وعينيه وأذنيه ويقول أي حاسة يستعملها كل عضو.'],
+ xs:[
+  {t:'s',p:'Je relie chaque organe au sens qui convient.',pa:'أربط كل عضو بالحاسة المناسبة.',c:SENS5,i:[['👁️ L\'œil|العين',0],['👂 L\'oreille|الأذن',1],['👃 Le nez|الأنف',2],['👅 La langue|اللسان',3],['✋ La peau|الجلد',4]]},
+  {t:'s',p:'Vrai ou faux ?',pa:'صحيح أم خطأ؟',c:['Vrai|صحيح','Faux|خطأ'],i:[['Je mange pour grandir.|آكل لكي أنمو.',0],['Je m\'assois loin de la télévision.|أجلس بعيدًا عن التلفاز.',0],['La peau est l\'organe de la vue.|الجلد هو عضو البصر.',1],['Les articulations sont nécessaires pour faire des mouvements.|المفاصل ضرورية للقيام بالحركات.',0],['Je peux vivre sans air.|أستطيع العيش بدون هواء.',1]]},
+  {t:'q',p:'Je suis piéton. Le feu est vert. Que fais-je ?',pa:'أنا راجل والضوء أخضر. ماذا أفعل؟',o:['Je traverse|أعبر','Je m\'arrête|أتوقف','Je cours sans regarder|أجري دون أن أنظر'],a:0,w:'Au feu vert, je peux traverser, en regardant des deux côtés.|عند الضوء الأخضر أعبر مع النظر يمينًا ويسارًا.'},
+  {t:'s',p:'Je relie le repas au bon moment.',pa:'أربط الوجبة بوقتها.',c:['Matin|الصباح','Midi|الظهر','Soir|المساء'],i:[['🥐 Le petit-déjeuner|الفطور',0],['🍲 Le déjeuner|الغداء',1],['🍽️ Le dîner|العشاء',2]]}
+ ]},
+
+{id:'t1',u:1,n:'Séance 1',em:'✋',fr:'Quel est le rôle du toucher ?',ar:'ما دور حاسة اللمس؟',
+ q:['Ayo a les yeux bandés. Peut-elle reconnaître ce qu\'il y a dans le sac ?','آيو معصوبة العينين. هل تستطيع التعرف على ما في الحقيبة؟'],
+ s:['Oui, elle peut toucher les objets.','نعم، تستطيع لمس الأشياء.'],
+ learn:[['Le sens du toucher me permet d\'identifier les objets.','حاسة اللمس تساعدني على التعرف على الأشياء.'],
+        ['Il me permet aussi de sentir leur aspect : lisse ou rugueux.','وتساعدني أيضًا على معرفة ملمسها: أملس أو خشن.'],
+        ['L\'organe du toucher, c\'est la peau. Je touche surtout avec mes mains.','عضو اللمس هو الجلد. ألمس خاصة بيدي.']],
+ words:[['Sens|حاسة'],['Toucher|اللمس'],['Lisse|أملس'],['Rugueux|خشن'],['Objet|شيء']],
+ ex:[['🍍','L\'ananas|الأناناس','Rugueux|خشن','b'],['🪨','Un galet|حصاة','Lisse|أملس','a'],['🪶','Une plume|ريشة','Lisse|أملس','a'],['🌳','L\'écorce|لحاء الشجرة','Rugueux|خشن','b'],['🍎','La pomme|التفاحة','Lisse|أملس','a'],['🧽','Le papier de verre|ورق الصنفرة','Rugueux|خشن','b']],
+ fact:['Chaque personne a des empreintes digitales à elle. Elles sont différentes de celles des autres.','لكل شخص بصمات أصابع خاصة به، تختلف عن بصمات الآخرين.'],
+ talk:['Fermer les yeux et toucher 3 objets de la maison. Sont-ils lisses ou rugueux ?','ليغمض عينيه ويلمس ثلاثة أشياء في البيت ثم يقول هل هي ملساء أم خشنة.'],
+ xs:[
+  {t:'q',p:'Par quel sens Ayo peut-elle identifier les fruits dans le sac ?',pa:'بأي حاسة تتعرف آيو على الفواكه في الحقيبة؟',o:['La vue|البصر','Le toucher|اللمس','L\'ouïe|السمع'],a:1,w:'Elle ne voit pas, mais elle touche les fruits avec ses mains.|هي لا ترى لكنها تلمس الفواكه بيديها.'},
+  vf('La peau est l\'organe du toucher.','الجلد هو عضو اللمس.',true,'Oui, la peau recouvre tout mon corps et me permet de toucher.|نعم، الجلد يغطي جسمي ويسمح لي باللمس.'),
+  {t:'s',p:'Je classe chaque objet : lisse ou rugueux ?',pa:'أصنّف كل شيء: أملس أم خشن؟',c:['Lisse|أملس','Rugueux|خشن'],i:[['🍍 L\'ananas|الأناناس',1],['🪨 Le galet|الحصاة',0],['🪶 La plume|الريشة',0],['🌳 L\'écorce|اللحاء',1],['🍎 La pomme|التفاحة',0],['🧽 Le papier de verre|ورق الصنفرة',1]]}
+ ]},
+
+{id:'t2',u:1,n:'Séance 2',em:'🧊',fr:'Comment distinguer le chaud et le froid ?',ar:'كيف أميّز بين الساخن والبارد؟',
+ q:['Ahmed demande à Youssef : « Voici deux verres d\'eau, un froid et un tiède. Peux-tu trouver le froid sans regarder ? »','يسأل أحمد يوسف: «هنا كأسان من الماء، أحدهما بارد والآخر فاتر. هل تستطيع معرفة البارد دون أن تنظر؟»'],
+ s:['Je peux le savoir avec le toucher.','أستطيع معرفة ذلك باللمس.'],
+ learn:[['Le sens du toucher me permet de distinguer le chaud et le froid.','حاسة اللمس تسمح لي بالتمييز بين الساخن والبارد.'],
+        ['Je peux sentir les différentes sensations par le toucher.','أستطيع الإحساس بأحاسيس مختلفة عن طريق اللمس.'],
+        ['Si je mets un gant, ma main ne sent plus bien : je dois utiliser la main sans gant.','إذا لبست قفازًا فلن تحس يدي جيدًا، لذلك أستعمل اليد التي بدون قفاز.']],
+ words:[['Chaud|ساخن'],['Froid|بارد'],['Tiède|فاتر'],['Toucher|اللمس']],
+ ex:[['🧊','Un glaçon|مكعب ثلج','Froid|بارد','a'],['🍲','La soupe|الحريرة / الحساء','Chaud|ساخن','b'],['☕','Le thé|الشاي','Chaud|ساخن','b'],['🍦','Une glace|مثلجات','Froid|بارد','a'],['🥤','Jus au frigo|عصير من الثلاجة','Froid|بارد','a'],['🥖','Le pain du four|خبز خارج من الفرن','Chaud|ساخن','b']],
+ warn:['Attention ! Je ne touche jamais une casserole, un four ou une théière qui chauffe.','انتبه! لا ألمس أبدًا قدرًا أو فرنًا أو إبريقًا ساخنًا.'],
+ talk:['Mettre une main dans un verre d\'eau froide, l\'autre dans un verre tiède. Que sent-elle ?','يضع يدًا في ماء بارد وأخرى في ماء فاتر ويصف ما يشعر به.'],
+ xs:[
+  {t:'q',p:'Par quelle main Youssef va-t-il distinguer l\'eau froide ?',pa:'بأي يد سيميّز يوسف الماء البارد؟',o:['La main qui porte le gant|اليد التي عليها القفاز','La main qui ne porte pas le gant|اليد التي ليس عليها القفاز'],a:1,w:'Le gant empêche de bien sentir. Il faut toucher avec la peau nue.|القفاز يمنع الإحساس الجيد، يجب اللمس بالجلد مباشرة.'},
+  {t:'s',p:'Je classe : chaud ou froid ?',pa:'أصنّف: ساخن أم بارد؟',c:['Chaud|ساخن','Froid|بارد'],i:[['🧊 Un glaçon|مكعب ثلج',1],['🍲 La soupe|الحساء',0],['☕ Le thé|الشاي',0],['🍦 Une glace|مثلجات',1],['🥤 Un jus froid|عصير بارد',1],['🥖 Le pain du four|خبز ساخن',0]]},
+  vf('On peut sentir le chaud et le froid avec le goût.','يمكن الإحساس بالساخن والبارد بحاسة الذوق.',false,'Non, c\'est le toucher qui sent le chaud et le froid.|لا، اللمس هو الذي يُحس بالساخن والبارد.'),
+  {t:'q',p:'La casserole vient de sortir du feu. Que fais-je ?',pa:'القدر خرج للتو من النار. ماذا أفعل؟',o:['Je la touche pour vérifier|ألمسها لأتأكد','Je ne la touche pas|لا ألمسها'],a:1,w:'Un objet très chaud peut brûler la peau.|الشيء الساخن جدًا قد يحرق الجلد.'}
+ ]},
+
+{id:'t3',u:1,n:'Séance 3',em:'🍲',fr:'Pourquoi j\'utilise plusieurs sens pour identifier un objet ?',ar:'لماذا أستعمل عدة حواس للتعرف على شيء؟',
+ q:['Amira goûte la soupe : « Elle est délicieuse, elle sent bon, mais elle est un peu chaude ». Comment le sait-elle ?','تذوقت أميرة الحساء: «لذيذ ورائحته طيبة لكنه ساخن قليلًا». كيف عرفت ذلك؟'],
+ s:['Elle utilise plusieurs sens.','هي تستعمل عدة حواس.'],
+ learn:[['Je peux utiliser plusieurs sens pour découvrir un objet.','أستطيع استعمال عدة حواس لاكتشاف شيء ما.'],
+        ['Je déduis la collaboration des sens pour identifier un objet.','أستنتج أن الحواس تتعاون للتعرف على الشيء.'],
+        ['Pour la soupe : l\'odorat (elle sent bon), le toucher (elle est chaude), le goût (elle est délicieuse).','للحساء: الشم (رائحة طيبة)، اللمس (ساخن)، الذوق (لذيذ).']],
+ words:[['Sens|حواس'],['Collaboration|تعاون'],['Objets|أشياء'],['Odorat|الشم'],['Goût|الذوق']],
+ ex:[['👃','Elle sent bon|رائحتها طيبة','L\'odorat|الشم','a'],['✋','Elle est chaude|إنها ساخنة','Le toucher|اللمس','a'],['👅','Elle est délicieuse|إنها لذيذة','Le goût|الذوق','a'],['👁️','Elle est rouge|إنها حمراء','La vue|البصر','a']],
+ talk:['Prendre une orange : la regarder, la toucher, la sentir. Quels sens utilise-t-il ?','يأخذ برتقالة وينظر إليها ويلمسها ويشمها، ثم يعدّ الحواس التي استعملها.'],
+ xs:[
+  {t:'s',p:'Quel sens a permis à Amira de le savoir ?',pa:'أي حاسة ساعدت أميرة على معرفة ذلك؟',c:SENS5,i:[['La soupe sent bon.|الحساء رائحته طيبة.',2],['La soupe est un peu chaude.|الحساء ساخن قليلًا.',4],['La soupe est délicieuse.|الحساء لذيذ.',3],['La soupe est de couleur rouge.|الحساء لونه أحمر.',0]]},
+  {t:'s',p:'Je regarde la situation : un seul sens ou plusieurs sens ?',pa:'أنظر إلى الحالة: حاسة واحدة أم عدة حواس؟',c:['Un seul sens|حاسة واحدة','Plusieurs sens|عدة حواس'],i:[['📻 J\'écoute la radio.|أستمع إلى المذياع.',0],['🍊 Je regarde, touche et sens une orange.|أنظر وألمس وأشم برتقالة.',1],['🌸 Je sens une fleur, les yeux fermés.|أشم وردة وعيناي مغمضتان.',0],['🍳 Je cuisine : je regarde, je sens, je goûte.|أطبخ: أنظر وأشم وأتذوق.',1]]},
+  vf('Pour découvrir un objet, je peux utiliser plusieurs sens.','لاكتشاف شيء يمكنني استعمال عدة حواس.',true,'Les sens travaillent ensemble : c\'est la collaboration des sens.|الحواس تعمل معًا: هذا هو تعاون الحواس.')
+ ]},
+
+{id:'t4',u:1,n:'Séance 4',em:'🎧',fr:'Quels sont les comportements qui préservent mes sens ?',ar:'ما السلوكات التي تحافظ على حواسي؟',
+ q:['Papa dit : « Arrête de jouer au téléphone ! ». Comment protéger mes sens ?','قال الأب: «توقف عن اللعب بالهاتف!». كيف أحمي حواسي؟'],
+ s:['Pour protéger mes sens, il faut éviter les mauvais comportements.','لحماية حواسي يجب أن أتجنب السلوكات السيئة.'],
+ learn:[['J\'évite les mauvais comportements pour protéger mes sens.','أتجنب السلوكات السيئة لأحمي حواسي.'],
+        ['J\'évite les dangers pour préserver mes sens.','أتجنب المخاطر لأحافظ على حواسي.']],
+ words:[['Comportement|سلوك'],['Sens|حواس'],['Protéger|يحمي'],['Préserver|يحافظ على']],
+ ex:[['🧢','Porter une casquette au soleil|أضع قبعة في الشمس','Bon|جيد','a'],['🔇','Éviter les bruits forts|أتجنب الأصوات العالية','Bon|جيد','a'],['💡','Lire avec une bonne lumière|أقرأ في ضوء جيد','Bon|جيد','a'],['🎧','Écouteurs longtemps, fort|سماعات طويلًا وبصوت عالٍ','Mauvais|سيئ','b'],['📱','Écran de très près|الشاشة من قرب شديد','Mauvais|سيئ','b'],['🔥','Repas très chauds|وجبات ساخنة جدًا','Mauvais|سيئ','b']],
+ talk:['Quelles habitudes protègent tes yeux ? Tes oreilles ? Ta langue ?','ما العادات التي تحمي عينيك؟ وأذنيك؟ ولسانك؟'],
+ xs:[
+  {t:'s',p:'Je classe : bon comportement ou mauvais comportement ?',pa:'أصنّف: سلوك جيد أم سيئ؟',c:['Bon|جيد','Mauvais|سيئ'],i:[['🧢 Je porte une casquette au soleil.|أضع قبعة في الشمس.',0],['🎧 Je garde les écouteurs très fort pendant des heures.|أبقي السماعات بصوت عالٍ لساعات.',1],['🔇 J\'évite les bruits forts.|أتجنب الأصوات العالية.',0],['📱 Je regarde l\'écran tout près de mes yeux.|أنظر إلى الشاشة من قرب شديد.',1],['💡 Je lis avec une bonne lumière.|أقرأ في ضوء جيد.',0]]},
+  {t:'s',p:'Vrai ou faux ?',pa:'صحيح أم خطأ؟',c:['Vrai|صحيح','Faux|خطأ'],i:[['Je mange les repas très chauds.|آكل وجباتي ساخنة جدًا.',1],['Je porte une casquette pour me protéger du soleil.|أضع قبعة لأحمي نفسي من الشمس.',0],['Je dois éviter les bruits pour protéger mes oreilles.|يجب أن أتجنب الضجيج لأحمي أذنيّ.',0],['Je porte les écouteurs longtemps pour suivre les vidéos.|أضع السماعات طويلًا لمتابعة الفيديوهات.',1]]}
+ ]},
+
+{id:'t5',u:1,n:'Séance 5',em:'🦴',fr:'Quelles sont les différentes articulations de mon corps ?',ar:'ما هي المفاصل المختلفة في جسمي؟',
+ q:['Aya joue au basket. Comment peut-elle envoyer la balle dans le panier ?','تلعب آية كرة السلة. كيف تُدخل الكرة في السلة؟'],
+ s:['Elle utilise toutes ses articulations.','تستعمل كل مفاصلها.'],
+ learn:[['Une articulation, c\'est l\'endroit où deux os se rejoignent. Elle me permet de bouger.','المفصل هو المكان الذي يلتقي فيه عظمان، وهو يسمح لي بالحركة.'],
+        ['Dans mon corps, il y a plusieurs articulations : le cou, l\'épaule, le coude, le poignet, la hanche, le genou, la cheville.','في جسمي مفاصل كثيرة: العنق والكتف والمرفق والمعصم والورك والركبة والكاحل.'],
+        ['Mes articulations sont situées dans plusieurs endroits de mon corps.','مفاصلي موجودة في أماكن كثيرة من جسمي.']],
+ fig:true,
+ words:[['Articulation|مفصل'],['Corps|جسم'],['Os|عظم'],['Épaule|الكتف'],['Coude|المرفق'],['Poignet|المعصم'],['Hanche|الورك'],['Genou|الركبة'],['Cheville|الكاحل']],
+ ex:[['💪','Le bras|الذراع','épaule, coude, poignet|كتف، مرفق، معصم','a'],['🦵','La jambe|الساق','hanche, genou, cheville|ورك، ركبة، كاحل','b']],
+ fact:['L\'articulation de la mâchoire (temporo-mandibulaire) me permet de parler et de mâcher.','مفصل الفك يسمح لي بالكلام والمضغ.'],
+ talk:['Plie ton bras : où sens-tu bouger ? Et ta jambe ?','يثني ذراعه: أين يحس بالحركة؟ وكذلك ساقه.'],
+ xs:[
+  {t:'f',p:'Je touche l\'articulation demandée sur le dessin.',pa:'ألمس المفصل المطلوب على الرسم.',g:['genou','coude','épaule','cheville','poignet','hanche']},
+  {t:'q',p:'Qu\'est-ce qu\'une articulation ?',pa:'ما هو المفصل؟',o:['L\'endroit où deux os se rejoignent|المكان الذي يلتقي فيه عظمان','Un muscle du bras|عضلة في الذراع','Un organe des sens|عضو من أعضاء الحواس'],a:0,w:'C\'est là que mon corps peut bouger.|هناك يستطيع جسمي أن يتحرك.'},
+  {t:'s',p:'Haut du corps ou bas du corps ?',pa:'أعلى الجسم أم أسفله؟',c:['Haut du corps|أعلى الجسم','Bas du corps|أسفل الجسم'],i:[['L\'épaule|الكتف',0],['Le genou|الركبة',1],['Le coude|المرفق',0],['La hanche|الورك',1],['Le poignet|المعصم',0],['La cheville|الكاحل',1]]}
+ ]},
+
+{id:'t6',u:1,n:'Séance 6',em:'🏋️',fr:'Quel est le rôle des articulations dans les mouvements ?',ar:'ما دور المفاصل في الحركات؟',
+ q:['Ahmed fait différents mouvements pour soulever les poids. Que font ses articulations ?','يقوم أحمد بحركات مختلفة لرفع الأثقال. ماذا تفعل مفاصله؟'],
+ s:['Ses articulations font différents types de mouvements.','مفاصله تقوم بأنواع مختلفة من الحركات.'],
+ learn:[['Mes articulations permettent à mon corps d\'effectuer des mouvements de flexion et d\'extension.','مفاصلي تسمح لجسمي بالقيام بحركات الثني والبسط.'],
+        ['Les mouvements les plus importants sont la flexion et l\'extension.','أهم الحركات هي الثني (Flexion) والبسط (Extension).'],
+        ['Flexion = je plie. Extension = j\'étends, je tends.','الثني = أطوي. البسط = أمدّ وأفرد.']],
+ words:[['Mouvement|حركة'],['Flexion|ثني'],['Extension|بسط (مدّ)']],
+ ex:[['💪','Je plie le bras|أثني ذراعي','Flexion|ثني','b'],['🙆','Je tends le bras|أمد ذراعي','Extension|بسط','a'],['🧎','Je plie le genou|أثني ركبتي','Flexion|ثني','b'],['🧍','Je tends la jambe|أمد ساقي','Extension|بسط','a']],
+ talk:['Montre-moi une flexion, puis une extension avec ton bras.','ليرني حركة ثني ثم حركة بسط بذراعه.'],
+ xs:[
+  {t:'q',p:'Pour plier la jambe quand je marche, j\'utilise l\'articulation du…',pa:'لأثني ساقي عند المشي أستعمل مفصل…',o:['genou|الركبة','coude|المرفق','poignet|المعصم'],a:0,w:'Le genou plie et tend la jambe.|الركبة تثني الساق وتبسطها.'},
+  {t:'s',p:'Flexion ou extension ?',pa:'ثني أم بسط؟',c:['Flexion|ثني','Extension|بسط'],i:[['💪 Je plie mon bras.|أثني ذراعي.',0],['🙆 Je tends mon bras.|أمد ذراعي.',1],['🧎 Je plie les genoux pour m\'accroupir.|أثني ركبتي لأجلس القرفصاء.',0],['🧍 Je me tiens debout, jambes tendues.|أقف وساقاي ممدودتان.',1]]},
+  {t:'q',p:'Mes articulations me permettent de faire des mouvements de…',pa:'تسمح لي مفاصلي بحركات…',o:['flexion et d\'extension|ثني وبسط','vue et d\'ouïe|بصر وسمع'],a:0,w:'Flexion (plier) et extension (tendre).|الثني (الطي) والبسط (المد).'}
+ ]},
+
+{id:'t7',u:1,n:'Séance 7',em:'🏃',fr:'Quelle est l\'importance du sport pour les articulations ?',ar:'ما أهمية الرياضة للمفاصل؟',
+ q:['Pourquoi Jad fait-il du sport régulièrement ?','لماذا يمارس جاد الرياضة بانتظام؟'],
+ s:['Pour être en bonne santé.','لكي يكون بصحة جيدة.'],
+ learn:[['Le sport aide à renforcer les articulations.','الرياضة تساعد على تقوية المفاصل.'],
+        ['Je dois pratiquer du sport pour préserver mes articulations.','يجب أن أمارس الرياضة لأحافظ على مفاصلي.'],
+        ['Pendant la natation, j\'utilise l\'épaule, le coude, la hanche et le genou.','أثناء السباحة أستعمل الكتف والمرفق والورك والركبة.']],
+ words:[['Sport|رياضة'],['Articulation|مفصل'],['Natation|السباحة']],
+ ex:[['🚴','Faire du vélo|ركوب الدراجة','Bon pour mes articulations|مفيد لمفاصلي','a'],['🏃','Courir|الجري','Bon pour mes articulations|مفيد لمفاصلي','a'],['🏊','Nager|السباحة','Bon pour mes articulations|مفيد لمفاصلي','a'],['📺','Rester devant un écran|البقاء أمام الشاشة','Je ne bouge pas|لا أتحرك','b']],
+ talk:['Quel sport aimes-tu ? Quelles articulations utilises-tu ?','ما الرياضة التي تحبها؟ وما المفاصل التي تستعملها؟'],
+ xs:[
+  {t:'s',p:'Cette activité est-elle importante pour mes articulations ?',pa:'هل هذا النشاط مهم لمفاصلي؟',c:['Oui|نعم','Non|لا'],i:[['🚴 Faire du vélo|ركوب الدراجة',0],['🎬 Regarder un film allongé|مشاهدة فيلم مستلقيًا',1],['🏃 Courir sur la piste|الجري في الميدان',0],['📱 Jouer au jeu vidéo toute la journée|ألعاب الفيديو طوال اليوم',1]]},
+  {t:'q',p:'Pendant la natation, quelles articulations l\'enfant utilise-t-il ?',pa:'أثناء السباحة، ما المفاصل التي يستعملها الطفل؟',o:['L\'épaule et le coude|الكتف والمرفق','Aucune|لا شيء'],a:0,w:'Nager fait bouger les bras : épaule et coude, mais aussi hanche et genou.|السباحة تحرك الذراعين: الكتف والمرفق، وكذلك الورك والركبة.'},
+  vf('Le sport aide à renforcer les articulations.','الرياضة تقوّي المفاصل.',true,'Je dois en faire pour préserver mes articulations.|يجب أن أمارسها لأحافظ على مفاصلي.')
+ ]},
+
+{id:'proj',u:1,n:'Séance 8 · Projet technologique',em:'✂️',fr:'Comment puis-je identifier mes organes des sens ?',ar:'كيف أتعرف على أعضاء حواسي؟',
+ q:['Je fabrique un visage avec les organes des sens.','أصنع وجهًا مع أعضاء الحواس.'],
+ s:['Je place les yeux, le nez, la bouche et les oreilles au bon endroit.','أضع العينين والأنف والفم والأذنين في مكانها الصحيح.'],
+ learn:[['Matériel : de la colle, des chemises cartonnées, des ciseaux, du papier crépon.','الأدوات: صمغ، ملفات كرتونية، مقص، ورق كريب.'],
+        ['① Je dessine la tête sur le papier crépon, puis je la découpe.','① أرسم الرأس على ورق الكريب ثم أقصّه.'],
+        ['② Je dessine les organes des sens sur le papier crépon, puis je les découpe.','② أرسم أعضاء الحواس على ورق الكريب ثم أقصّها.'],
+        ['③ Je colle les organes sur le visage, à l\'endroit convenable.','③ ألصق الأعضاء على الوجه في المكان المناسب.'],
+        ['④ Je partage mon projet avec les autres groupes de la classe.','④ أعرض مشروعي على باقي أفواج القسم.']],
+ words:[['Colle|صمغ'],['Ciseaux|مقص'],['Papier crépon|ورق الكريب'],['Visage|وجه']],
+ ex:[['👀','Les yeux|العينان','En haut du visage|أعلى الوجه','a'],['👃','Le nez|الأنف','Au milieu|في الوسط','a'],['👄','La bouche|الفم','En bas|في الأسفل','a'],['👂','Les oreilles|الأذنان','Sur les côtés|على الجانبين','a']],
+ talk:['Dessine un visage et colle les 5 organes à la bonne place.','ليرسم وجهًا ويلصق أعضاء الحواس في أماكنها الصحيحة.'],
+ xs:[
+  {t:'s',p:'Où je place chaque organe sur le visage ?',pa:'أين أضع كل عضو على الوجه؟',c:['En haut|أعلى','Au milieu|وسط','En bas|أسفل','Sur les côtés|الجانبين'],i:[['👀 Les yeux|العينان',0],['👃 Le nez|الأنف',1],['👄 La bouche|الفم',2],['👂 Les oreilles|الأذنان',3]]},
+  {t:'q',p:'Quelle est la première étape de la réalisation ?',pa:'ما هي الخطوة الأولى في الإنجاز؟',o:['Je dessine la tête sur le papier crépon|أرسم الرأس على ورق الكريب','Je colle les organes|ألصق الأعضاء','Je partage mon projet|أعرض مشروعي'],a:0,w:'D\'abord la tête, puis les organes, puis la colle.|أولًا الرأس ثم الأعضاء ثم الصمغ.'},
+  {t:'q',p:'Pour fixer les organes sur le visage, j\'ai besoin de…',pa:'لتثبيت الأعضاء على الوجه أحتاج إلى…',o:['colle|صمغ','ciseaux|مقص'],a:0,w:'Les ciseaux servent à découper, la colle à fixer.|المقص للقص والصمغ للتثبيت.'}
+ ]},
+
+{id:'eval',u:1,n:'Séances 9 et 10 · Évaluation et soutien',em:'⭐',fr:'Je m\'évalue : quel sens j\'utilise ?',ar:'أقيّم نفسي: أي حاسة أستعمل؟',
+ q:['Avec quels sens les élèves écrivent-ils sous la dictée de la maîtresse ?','بأي حواس يكتب التلاميذ ما تمليه المعلمة؟'],
+ s:['L\'ouïe pour écouter, la vue et le toucher pour écrire.','السمع للإصغاء، والبصر واللمس للكتابة.'],
+ learn:[['Je retiens : le toucher (chaud, froid, lisse, rugueux), l\'utilité de plusieurs sens, les bons comportements.','أتذكر: اللمس (ساخن، بارد، أملس، خشن)، فائدة استعمال عدة حواس، والسلوكات الجيدة.'],
+        ['Je retiens : les articulations (cou, épaule, coude, poignet, hanche, genou, cheville), la flexion et l\'extension.','أتذكر: المفاصل (عنق، كتف، مرفق، معصم، ورك، ركبة، كاحل) والثني والبسط.']],
+ words:[['Toucher|اللمس'],['Ouïe|السمع'],['Vue|البصر'],['Flexion|ثني'],['Extension|بسط']],
+ ex:[['🍎','Je cueille une pomme|أقطف تفاحة','Toucher + vue|اللمس + البصر','a'],['✏️','Je prends un stylo|أمسك قلمًا','Toucher + vue|اللمس + البصر','a'],['📻','J\'écoute la radio|أستمع إلى المذياع','L\'ouïe|السمع','a']],
+ talk:['Pose-lui la question : « Quel sens utilises-tu en ce moment ? »','اسأله: «ما الحاسة التي تستعملها الآن؟» وليذكر أكثر من حاسة.'],
+ xs:[
+  {t:'s',p:'Vrai ou faux ?',pa:'صحيح أم خطأ؟',c:['Vrai|صحيح','Faux|خطأ'],i:[['J\'utilise un seul sens pour découvrir mon entourage.|أستعمل حاسة واحدة فقط لاكتشاف محيطي.',1],['On peut sentir le chaud et le froid avec le goût.|يمكن الإحساس بالساخن والبارد بحاسة الذوق.',1],['La peau recouvre la surface du corps.|الجلد يغطي سطح الجسم.',0],['J\'évite les mauvais comportements pour protéger mes sens.|أتجنب السلوكات السيئة لأحمي حواسي.',0]]},
+  {t:'q',p:'Pour écrire sous la dictée, les élèves utilisent…',pa:'لكتابة الإملاء يستعمل التلاميذ…',o:['la vue, le toucher et l\'ouïe|البصر واللمس والسمع','l\'odorat et le goût|الشم والذوق'],a:0,w:'Ils écoutent (ouïe), regardent (vue) et tiennent le stylo (toucher).|يستمعون (السمع) وينظرون (البصر) ويمسكون القلم (اللمس).'},
+  {t:'q',p:'Je cueille une pomme : j\'utilise le sens du toucher et celui de…',pa:'أقطف تفاحة: أستعمل حاسة اللمس وحاسة…',o:['la vue|البصر','l\'ouïe|السمع'],a:0,w:'Je vois la pomme et je la touche.|أرى التفاحة وألمسها.'},
+  {t:'q',p:'J\'écoute la radio : j\'utilise le sens de…',pa:'أستمع إلى المذياع: أستعمل حاسة…',o:['la vue|البصر','l\'ouïe|السمع','le goût|الذوق'],a:1,w:'On écoute avec les oreilles : c\'est l\'ouïe.|نستمع بالأذنين: إنه السمع.'},
+  {t:'s',p:'Flexion ou extension ?',pa:'ثني أم بسط؟',c:['Flexion|ثني','Extension|بسط'],i:[['Je plie le bras.|أثني ذراعي.',0],['Je tends le bras.|أمد ذراعي.',1]]},
+  {t:'s',p:'Lisse ou rugueux ? Chaud ou froid ?',pa:'أملس أم خشن؟ ساخن أم بارد؟',c:['Lisse|أملس','Rugueux|خشن','Chaud|ساخن','Froid|بارد'],i:[['🍍 L\'ananas|الأناناس',1],['🍎 La pomme|التفاحة',0],['☕ Un thé qui fume|شاي يتصاعد منه البخار',2],['🧊 Un glaçon|مكعب ثلج',3]]}
+ ]},
+
+{id:'a1',u:2,n:'Séance 1',em:'🥐',fr:'Comment organiser les repas de la journée ?',ar:'كيف أنظم وجبات اليوم؟',
+ q:['Quels sont les moments des repas ?','ما هي أوقات الوجبات؟'],
+ s:['Le matin, à midi et le soir.','في الصباح وفي الظهيرة وفي المساء.'],
+ learn:[['Je prends les repas aux bons moments pour être en bonne santé.','آخذ وجباتي في أوقاتها الصحيحة لأكون بصحة جيدة.'],
+        ['Le matin, je prends le petit-déjeuner. À midi, je prends le déjeuner. Le soir, je prends le dîner.','في الصباح أتناول الفطور، وفي الظهيرة الغداء، وفي المساء العشاء.']],
+ words:[['Repas|وجبة'],['Petit-déjeuner|الفطور'],['Déjeuner|الغداء'],['Dîner|العشاء']],
+ ex:[['🌅','Le matin|الصباح','Petit-déjeuner|الفطور','a'],['☀️','À midi|الظهيرة','Déjeuner|الغداء','a'],['🌙','Le soir|المساء','Dîner|العشاء','a']],
+ talk:['Qu\'as-tu mangé ce matin ? Comment s\'appelle ce repas ?','ماذا أكلت هذا الصباح؟ وما اسم هذه الوجبة؟'],
+ xs:[
+  {t:'s',p:'Je relie le moment au bon repas.',pa:'أربط الوقت بالوجبة المناسبة.',c:['Petit-déjeuner|الفطور','Déjeuner|الغداء','Dîner|العشاء'],i:[['🌅 Le matin|الصباح',0],['☀️ À midi|الظهيرة',1],['🌙 Le soir|المساء',2],['🏫 Avant d\'aller à l\'école|قبل الذهاب إلى المدرسة',0],['😴 Avant de dormir|قبل النوم',2]]},
+  {t:'q',p:'Quel repas je prends le soir ?',pa:'أي وجبة أتناولها مساءً؟',o:['Le dîner|العشاء','Le petit-déjeuner|الفطور','Le déjeuner|الغداء'],a:0,w:'Le soir, c\'est le dîner.|في المساء هو العشاء.'},
+  {t:'q',p:'Quel repas je prends le matin ?',pa:'أي وجبة أتناولها صباحًا؟',o:['Le dîner|العشاء','Le petit-déjeuner|الفطور','Le déjeuner|الغداء'],a:1,w:'Le matin, c\'est le petit-déjeuner.|في الصباح هو الفطور.'}
+ ]},
+
+{id:'a2',u:2,n:'Séance 2',em:'🍎',fr:'Quels sont les organes de mastication ?',ar:'ما هي أعضاء المضغ؟',
+ q:['Nada mange une pomme. Quels organes utilise-t-elle pour la mastiquer ?','تأكل ندى تفاحة. ما الأعضاء التي تستعملها لمضغها؟'],
+ s:['Elle utilise la bouche et les dents.','تستعمل الفم والأسنان.'],
+ learn:[['La mastication est un moyen de broyer les aliments dans la bouche.','المضغ وسيلة لطحن الطعام داخل الفم.'],
+        ['Mes organes de mastication sont les dents et la langue, avec l\'aide de la salive.','أعضاء المضغ هي الأسنان واللسان، بمساعدة اللعاب.'],
+        ['Les dents coupent la pomme en petits morceaux, la salive facilite la mastication.','الأسنان تقطّع التفاحة إلى قطع صغيرة، واللعاب يسهّل المضغ.']],
+ words:[['Mastication|المضغ'],['Dents|الأسنان'],['Langue|اللسان'],['Salive|اللعاب'],['Bouche|الفم']],
+ ex:[['🦷','Les dents|الأسنان','Elles coupent et broient|تقطع وتطحن','a'],['👅','La langue|اللسان','Elle déplace les aliments|تحرك الطعام','a'],['💧','La salive|اللعاب','Elle facilite la mastication|يسهّل المضغ','a'],['🖐️','La main|اليد','Elle ne mastique pas|لا تمضغ','b']],
+ talk:['Mange un morceau de pain doucement. Que font tes dents ? Ta langue ?','يأكل قطعة خبز ببطء ويصف ما تفعله أسنانه ولسانه.'],
+ xs:[
+  {t:'s',p:'Cet organe intervient-il dans la mastication ?',pa:'هل يشارك هذا العضو في المضغ؟',c:['Il intervient|يشارك','Il n\'intervient pas|لا يشارك'],i:[['🦷 Les dents|الأسنان',0],['🖐️ La main|اليد',1],['👅 La langue|اللسان',0],['💧 La salive|اللعاب',0]]},
+  {t:'s',p:'Puis-je mastiquer cet aliment ?',pa:'هل أستطيع مضغ هذا الطعام؟',c:['Oui, je mastique|نعم أمضغ','Non|لا'],i:[['🍎 Une pomme|تفاحة',0],['🥤 Un verre d\'eau|كأس ماء',1],['🍹 Un jus|عصير',1],['🍊 Une orange|برتقالة',0]]},
+  {t:'q',p:'La mastication se passe dans…',pa:'يتم المضغ في…',o:['la bouche|الفم','le ventre|البطن','les mains|اليدين'],a:0,w:'Dans la bouche, j\'utilise mes dents et la salive.|في الفم أستعمل أسناني واللعاب.'}
+ ]},
+
+{id:'a3',u:2,n:'Séance 3',em:'🦷',fr:'Quels sont les types de dents ?',ar:'ما هي أنواع الأسنان؟',
+ q:['Le dentiste regarde les dents du fils. Y a-t-il plusieurs types de dents ?','ينظر طبيب الأسنان إلى أسنان الابن. هل للأسنان عدة أنواع؟'],
+ s:['Oui, mes dents ne sont pas toutes pareilles.','نعم، أسناني ليست كلها متشابهة.'],
+ learn:[['J\'ai différents types de dents.','لدي أنواع مختلفة من الأسنان.'],
+        ['Mes dents sont diverses : il y a les incisives, les canines et les molaires.','أسناني متنوعة: القواطع والأنياب والأضراس.'],
+        ['Incisives : devant, plates, elles coupent. Canines : pointues, elles déchirent. Molaires : larges, au fond, elles broient.','القواطع: في الأمام، مسطحة، تقطع. الأنياب: مدببة، تمزق. الأضراس: عريضة في الخلف، تطحن.']],
+ words:[['Dents|الأسنان'],['Incisive|قاطعة'],['Canine|ناب'],['Molaire|ضرس']],
+ ex:[['🦷','Les incisives|القواطع','Devant, elles coupent|في الأمام، تقطع','a'],['🦷','Les canines|الأنياب','Pointues, elles déchirent|مدببة، تمزق','b'],['🦷','Les molaires|الأضراس','Au fond, elles broient|في الخلف، تطحن','a']],
+ talk:['Passe la langue sur tes dents : lesquelles sont plates ? pointues ? larges ?','يمرر لسانه على أسنانه: أيها مسطح؟ مدبب؟ عريض؟'],
+ xs:[
+  {t:'q',p:'Quelles dents sont à l\'avant et servent à couper ?',pa:'ما الأسنان التي في الأمام وتُستعمل للقطع؟',o:['Les incisives|القواطع','Les canines|الأنياب','Les molaires|الأضراس'],a:0,w:'Les incisives sont plates et coupent.|القواطع مسطحة وتقطع.'},
+  {t:'q',p:'Comment s\'appellent les dents pointues ?',pa:'ماذا نسمي الأسنان المدببة؟',o:['Les incisives|القواطع','Les canines|الأنياب','Les molaires|الأضراس'],a:1,w:'Les canines sont pointues et déchirent.|الأنياب مدببة وتمزق.'},
+  {t:'s',p:'Quelle dent utilise-t-on ?',pa:'أي سن نستعمل؟',c:['Incisives|القواطع','Canines|الأنياب','Molaires|الأضراس'],i:[['🥖 Je coupe un morceau de pain.|أقطع قطعة خبز.',0],['🍗 Je déchire un morceau de viande.|أمزق قطعة لحم.',1],['🥜 J\'écrase des noix.|أطحن المكسرات.',2],['🍎 Je croque la pomme devant.|أقضم التفاحة بالأمام.',0]]}
+ ]},
+
+{id:'a4',u:2,n:'Séance 4',em:'😁',fr:'Quelle est la fonction des dents ?',ar:'ما وظيفة الأسنان؟',
+ q:['À quoi servent mes dents quand je mange ?','لماذا أحتاج إلى أسناني عند الأكل؟'],
+ s:['Mes dents servent à couper et à écraser les aliments.','أسناني تقطع الطعام وتطحنه.'],
+ learn:[['Mes dents coupent, déchirent et broient les aliments en petits morceaux.','أسناني تقطع الطعام وتمزقه وتطحنه إلى قطع صغيرة.'],
+        ['Les incisives coupent, les canines déchirent, les molaires broient.','القواطع تقطع، والأنياب تمزق، والأضراس تطحن.'],
+        ['Des aliments bien mastiqués sont plus faciles à digérer.','الطعام الذي مُضغ جيدًا يسهل هضمه.'],
+        ['Les dents m\'aident aussi à bien parler et à sourire.','الأسنان تساعدني أيضًا على الكلام الجيد والابتسام.']],
+ words:[['Fonction|وظيفة'],['Couper|يقطع'],['Déchirer|يمزق'],['Broyer|يطحن']],
+ ex:[['🥖','Couper le pain|قطع الخبز','Incisives|القواطع','a'],['🍗','Déchirer la viande|تمزيق اللحم','Canines|الأنياب','b'],['🥜','Broyer les noix|طحن المكسرات','Molaires|الأضراس','a']],
+ talk:['Mange une carotte : quelles dents utilises-tu pour la couper ? pour l\'écraser ?','يأكل جزرة ويقول أي أسنان يستعمل للقطع وأيها للطحن.'],
+ xs:[
+  {t:'s',p:'Quelle est la fonction de cette dent ?',pa:'ما وظيفة هذا السن؟',c:['Couper|تقطع','Déchirer|تمزق','Broyer|تطحن'],i:[['🦷 Les incisives|القواطع',0],['🦷 Les canines|الأنياب',1],['🦷 Les molaires|الأضراس',2]]},
+  {t:'q',p:'À quoi servent mes dents ?',pa:'لماذا نحتاج إلى الأسنان؟',o:['À couper et broyer les aliments|لقطع الطعام وطحنه','À sentir les odeurs|لشم الروائح','À entendre les sons|لسماع الأصوات'],a:0,w:'Les dents préparent les aliments avant de les avaler.|الأسنان تهيئ الطعام قبل ابتلاعه.'},
+  vf('Des aliments bien mastiqués sont plus faciles à digérer.','الطعام الممضوغ جيدًا يسهل هضمه.',true,'Les petits morceaux sont mieux digérés.|القطع الصغيرة تُهضم بسهولة أكبر.')
+ ]},
+
+{id:'a5',u:2,n:'Séance 5',em:'🪥',fr:'Comment prendre soin de mes dents ?',ar:'كيف أعتني بأسناني؟',
+ q:['Que dois-je faire chaque jour pour garder mes dents propres ?','ماذا أفعل كل يوم لأحافظ على نظافة أسناني؟'],
+ s:['Je dois me brosser les dents.','يجب أن أنظف أسناني بالفرشاة.'],
+ learn:[['Je me brosse les dents au moins deux fois par jour : le matin et le soir avant de dormir.','أنظف أسناني بالفرشاة مرتين على الأقل في اليوم: صباحًا ومساءً قبل النوم.'],
+        ['J\'utilise une brosse à dents et un peu de dentifrice. Je brosse pendant 2 minutes.','أستعمل فرشاة ومعجون أسنان، وأفرش لمدة دقيقتين.'],
+        ['Je vais chez le dentiste pour contrôler mes dents.','أزور طبيب الأسنان لفحص أسناني.']],
+ words:[['Brosse à dents|فرشاة الأسنان'],['Dentifrice|معجون الأسنان'],['Dentiste|طبيب الأسنان'],['Hygiène|نظافة']],
+ ex:[['🪥','La brosse à dents|فرشاة الأسنان','Je brosse|أفرش','a'],['🧴','Le dentifrice|معجون الأسنان','Un petit peu|قليل منه','a'],['👩‍⚕️','Le dentiste|طبيب الأسنان','Il contrôle mes dents|يفحص أسناني','a'],['🌙','Avant de dormir|قبل النوم','Je me brosse les dents|أفرش أسناني','a']],
+ talk:['Brossons les dents ensemble pendant 2 minutes avec une chanson.','نفرش الأسنان معًا لمدة دقيقتين على إيقاع أغنية.'],
+ xs:[
+  {t:'q',p:'Combien de fois par jour dois-je me brosser les dents ?',pa:'كم مرة في اليوم يجب أن أفرش أسناني؟',o:['Jamais|أبدًا','Une fois par semaine|مرة في الأسبوع','Au moins deux fois par jour|مرتين على الأقل في اليوم'],a:2,w:'Le matin et le soir avant de dormir.|صباحًا ومساءً قبل النوم.'},
+  {t:'s',p:'J\'ai besoin de cet objet pour me brosser les dents ?',pa:'هل أحتاج هذا الشيء لتنظيف أسناني؟',c:['Oui|نعم','Non|لا'],i:[['🪥 Une brosse à dents|فرشاة أسنان',0],['🧴 Du dentifrice|معجون أسنان',0],['✂️ Des ciseaux|مقص',1],['💧 De l\'eau|ماء',0]]},
+  vf('Je dois aller chez le dentiste pour contrôler mes dents.','يجب أن أزور طبيب الأسنان لفحص أسناني.',true,'Le dentiste vérifie si mes dents sont en bonne santé.|الطبيب يتأكد أن أسناني سليمة.')
+ ]},
+
+{id:'a6',u:2,n:'Séance 6',em:'🛡️',fr:'Comment bien protéger mes dents ?',ar:'كيف أحمي أسناني جيدًا؟',
+ q:['Quels comportements abîment mes dents ?','ما السلوكات التي تضر بأسناني؟'],
+ s:['Manger trop de bonbons abîme mes dents.','الإكثار من الحلوى يضر بأسناني.'],
+ learn:[['Les aliments très sucrés abîment les dents et font des caries.','الأطعمة الغنية بالسكر تضر الأسنان وتسبب التسوس.'],
+        ['Je ne grignote pas toute la journée. Je me brosse les dents après avoir mangé du sucre.','لا آكل طوال اليوم، وأفرش أسناني بعد تناول السكريات.'],
+        ['Je n\'ouvre pas une bouteille avec mes dents et je ne casse pas de noix avec elles.','لا أفتح القنينة بأسناني ولا أكسر المكسرات بها.'],
+        ['En cas de douleur, j\'en parle à un adulte et je vais chez le dentiste.','عند الإحساس بألم أخبر شخصًا بالغًا وأذهب إلى طبيب الأسنان.']],
+ words:[['Carie|تسوس'],['Sucre|سكر'],['Protéger|يحمي'],['Douleur|ألم']],
+ ex:[['🍬','Trop de bonbons|الإكثار من الحلوى','Mauvais|سيئ','b'],['🥤','Boissons sucrées|مشروبات سكرية','Mauvais|سيئ','b'],['🪥','Brossage après le sucre|الفرش بعد السكريات','Bon|جيد','a'],['🦷','Ouvrir une bouteille avec les dents|فتح قنينة بالأسنان','Mauvais|سيئ','b']],
+ talk:['Quels aliments sucrés manges-tu ? Comment protéger tes dents après ?','ما الأطعمة السكرية التي يأكلها؟ وكيف يحمي أسنانه بعدها؟'],
+ xs:[
+  {t:'s',p:'Bon ou mauvais pour mes dents ?',pa:'جيد أم سيئ لأسناني؟',c:['Bon|جيد','Mauvais|سيئ'],i:[['🪥 Je me brosse les dents le soir.|أفرش أسناني مساءً.',0],['🍬 Je mange beaucoup de bonbons.|آكل الكثير من الحلوى.',1],['🍾 J\'ouvre une bouteille avec mes dents.|أفتح قنينة بأسناني.',1],['👩‍⚕️ Je vais chez le dentiste.|أزور طبيب الأسنان.',0]]},
+  {t:'q',p:'Quel aliment abîme le plus mes dents ?',pa:'أي طعام يضر أسناني أكثر؟',o:['Les bonbons|الحلوى','Une pomme|تفاحة','De l\'eau|ماء'],a:0,w:'Le sucre fait des caries.|السكر يسبب التسوس.'},
+  vf('Je peux ouvrir une bouteille avec mes dents.','يمكنني فتح قنينة بأسناني.',false,'Je risque de casser mes dents.|قد أكسر أسناني.')
+ ]},
+
+{id:'a7',u:2,n:'Séance 7',em:'🧼',fr:'Quelle est l\'importance de l\'hygiène des aliments ?',ar:'ما أهمية نظافة الأغذية؟',
+ q:['Pourquoi dois-je faire attention à la propreté des aliments ?','لماذا يجب أن أنتبه إلى نظافة الأغذية؟'],
+ s:['Des aliments sales peuvent me rendre malade.','الأغذية غير النظيفة قد تجعلني مريضًا.'],
+ learn:[['Je me lave les mains avant de manger.','أغسل يديّ قبل الأكل.'],
+        ['Je lave les fruits et les légumes avant de les manger.','أغسل الفواكه والخضر قبل أكلها.'],
+        ['Je regarde la date limite sur l\'emballage et je range les aliments au frais.','أنظر إلى تاريخ الصلاحية على العلبة وأحفظ الأغذية في مكان بارد.'],
+        ['Je ne mange pas un aliment pourri, moisi ou tombé par terre.','لا آكل طعامًا فاسدًا أو متعفنًا أو سقط على الأرض.']],
+ words:[['Hygiène|نظافة'],['Laver|يغسل'],['Date limite|تاريخ الصلاحية'],['Frigo|ثلاجة']],
+ ex:[['🧼','Laver les mains|غسل اليدين','Avant de manger|قبل الأكل','a'],['🍎','Laver les fruits|غسل الفواكه','Avant de les manger|قبل أكلها','a'],['🧊','Ranger au frigo|الحفظ في الثلاجة','Lait, yaourt, viande|الحليب، الياغورت، اللحم','a'],['🤢','Aliment moisi|طعام متعفن','Je ne le mange pas|لا آكله','b']],
+ talk:['Fais le tour du frigo : cherche la date limite sur un yaourt.','لنفتح الثلاجة ونبحث عن تاريخ الصلاحية على الياغورت.'],
+ xs:[
+  {t:'s',p:'Bon geste d\'hygiène ou mauvais geste ?',pa:'سلوك نظيف أم غير نظيف؟',c:['Bon geste|سلوك جيد','Mauvais geste|سلوك سيئ'],i:[['🧼 Je me lave les mains avant de manger.|أغسل يديّ قبل الأكل.',0],['🍎 Je mange une pomme sans la laver.|آكل تفاحة دون غسلها.',1],['🧊 Je range le lait au frigo.|أضع الحليب في الثلاجة.',0],['🍞 Je mange un pain moisi.|آكل خبزًا متعفنًا.',1]]},
+  {t:'q',p:'Que dois-je faire avant de manger un fruit ?',pa:'ماذا أفعل قبل أكل الفاكهة؟',o:['Je le lave|أغسلها','Je le jette par terre|أرميها على الأرض'],a:0,w:'Le lavage enlève la saleté et les microbes.|الغسل يزيل الأوساخ والجراثيم.'},
+  vf('Je peux manger un aliment tombé par terre.','يمكنني أكل طعام سقط على الأرض.',false,'Il est sale : il peut me rendre malade.|إنه متسخ وقد يمرضني.')
+ ]},
+
+{id:'a8',u:2,n:'Séance 8',em:'🥛',fr:'Comment choisir les aliments qui protègent mes dents ?',ar:'كيف أختار الأغذية التي تحمي أسناني؟',
+ q:['Quels aliments sont bons pour mes dents ?','ما الأغذية المفيدة لأسناني؟'],
+ s:['Le lait, les fruits et les légumes sont bons pour mes dents.','الحليب والفواكه والخضر مفيدة لأسناني.'],
+ learn:[['Le lait, le fromage et le yaourt rendent mes dents fortes.','الحليب والجبن والياغورت تقوّي أسناني.'],
+        ['Les fruits et les légumes croquants (pomme, carotte) nettoient mes dents.','الفواكه والخضر المقرمشة (التفاح، الجزر) تنظف أسناني.'],
+        ['Je bois de l\'eau. Je mange peu de bonbons, de gâteaux et de boissons sucrées.','أشرب الماء، وآكل القليل من الحلوى والكعك والمشروبات السكرية.']],
+ words:[['Aliment|غذاء'],['Lait|حليب'],['Fruits|فواكه'],['Légumes|خضر']],
+ ex:[['🥛','Le lait|الحليب','Bon pour mes dents|مفيد لأسناني','a'],['🧀','Le fromage|الجبن','Bon pour mes dents|مفيد لأسناني','a'],['🥕','La carotte|الجزرة','Bon pour mes dents|مفيد لأسناني','a'],['🍬','Les bonbons|الحلوى','Mauvais pour mes dents|ضار بأسناني','b'],['🥤','Le soda|المشروب الغازي','Mauvais pour mes dents|ضار بأسناني','b'],['💧','L\'eau|الماء','Bon pour mes dents|مفيد لأسناني','a']],
+ talk:['Prépare avec lui un goûter qui protège les dents.','حضّر معه وجبة خفيفة تحمي الأسنان.'],
+ xs:[
+  {t:'s',p:'Cet aliment protège-t-il mes dents ?',pa:'هل يحمي هذا الغذاء أسناني؟',c:['Oui, il protège|نعم يحميها','Non, il abîme|لا يضرها'],i:[['🥛 Le lait|الحليب',0],['🍬 Les bonbons|الحلوى',1],['🥕 La carotte|الجزرة',0],['🥤 Le soda|المشروب الغازي',1],['🍎 La pomme|التفاحة',0],['🧀 Le fromage|الجبن',0]]},
+  {t:'q',p:'Quel goûter est le meilleur pour mes dents ?',pa:'أي وجبة خفيفة هي الأفضل لأسناني؟',o:['Une pomme et un verre de lait|تفاحة وكأس حليب','Des bonbons et un soda|حلوى ومشروب غازي'],a:0,w:'Pas de sucre en trop, et du calcium dans le lait.|دون سكر زائد، والحليب غني بالكالسيوم.'},
+  {t:'q',p:'Quelle boisson est la meilleure pour mes dents ?',pa:'أي مشروب هو الأفضل لأسناني؟',o:['L\'eau|الماء','Le soda|المشروب الغازي','Le jus très sucré|العصير شديد الحلاوة'],a:0,w:'L\'eau ne contient pas de sucre.|الماء لا يحتوي على سكر.'}
+ ]}
+];
+const UNITS=[
+ {u:0,t:'Évaluation diagnostique',ar:'تقويم تشخيصي',cls:'u0'},
+ {u:1,t:'Unité 1 · La santé humaine',ar:'الوحدة 1: صحة الإنسان',cls:'u1'},
+ {u:2,t:'Unité 2 · L\'alimentation et la santé humaine',ar:'الوحدة 2: التغذية وصحة الإنسان',cls:'u2'}
+];
+const SOON=[['Quelle est la fonction des dents ?','ما وظيفة الأسنان؟'],['Comment prendre soin de mes dents ?','كيف أعتني بأسناني؟'],['Comment bien protéger mes dents ?','كيف أحمي أسناني جيدًا؟'],['Quelle est l\'importance de l\'hygiène des aliments ?','ما أهمية نظافة الأغذية؟'],['Comment choisir les aliments qui protègent mes dents ?','كيف أختار الأغذية التي تحمي أسناني؟']];
+
+/* ---------- progression ---------- */
+const getP=()=>store.get();
+function saveScore(id,score,total){const p=getP();const best=p[id]||{s:0,t:total};if(score>=best.s)p[id]={s:score,t:total};store.set(p)}
+const starsOf=r=>!r?0:(r.s/r.t>=.9?3:r.s/r.t>=.6?2:1);
+const starEl=n=>h('div',{class:'stars','aria-label':n+' étoiles sur 3'},[1,2,3].map(i=>h('span',{class:i<=n?'':'off'},'★')));
+
+/* ---------- figure du corps ---------- */
+const JP={cou:[[100,64]],epaule:[[72,86],[128,86]],coude:[[48,134],[152,134]],poignet:[[34,180],[166,180]],hanche:[[84,182],[116,182]],genou:[[76,246],[124,246]],cheville:[[72,304],[128,304]]};
+function figure(onPick){
+  const L=[[100,62,100,176],[72,86,128,86],[84,182,116,182],[72,86,48,134],[48,134,34,180],[128,86,152,134],[152,134,166,180],[84,182,76,246],[76,246,72,304],[116,182,124,246],[124,246,128,304],[72,304,58,312],[128,304,142,312]];
+  const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 200 330');svg.setAttribute('class','fig');svg.setAttribute('role','group');svg.setAttribute('aria-label','Corps humain avec les articulations');
+  const hd=document.createElementNS(ns,'circle');hd.setAttribute('class','head');hd.setAttribute('cx',100);hd.setAttribute('cy',30);hd.setAttribute('r',20);svg.append(hd);
+  L.forEach(a=>{const l=document.createElementNS(ns,'line');['x1','y1','x2','y2'].forEach((k,i)=>l.setAttribute(k,a[i]));svg.append(l)});
+  const dots=[];
+  for(const k in JP)JP[k].forEach(([x,y])=>{const c=document.createElementNS(ns,'circle');c.setAttribute('class','j');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',9);c.setAttribute('tabindex','0');c.setAttribute('role','button');c.setAttribute('aria-label',J[k][0]);c.dataset.k=k;
+    const fire=()=>onPick(k,c);c.addEventListener('click',fire);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fire()}});svg.append(c);dots.push(c)});
+  return {svg,dots};
+}
+
+/* ---------- exercices ---------- */
+function qEx(ex,cb){
+  let tries=0,done=false;const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});const box=h('div',{class:'opts'});
+  ex.o.forEach((o,i)=>{const b=h('button',{type:'button',class:'opt'},biS(o));b.addEventListener('click',()=>{
+    if(done||b.disabled)return;
+    if(i===ex.a){done=true;b.classList.add('ok');fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo ! '+(ex.w?sp(ex.w)[0]:''),'أحسنت! '+(ex.w?sp(ex.w)[1]:''))));cb(tries?0:1)}
+    else{tries++;b.classList.add('bad');b.disabled=true;fb.replaceChildren(h('div',{class:'m bad'},bi('Pas tout à fait. Essaie encore !','ليس تمامًا، حاول مرة أخرى!')))}
+  });box.append(b)});
+  return [bi(ex.p,ex.pa,'p'),box,fb];
+}
+function sEx(ex,cb){
+  const n=ex.i.length;let left=n,first=0;const rows=h('div');
+  ex.i.forEach(([lab,ci])=>{
+    let wrong=false,fin=false;const row=h('div',{class:'row'});const [f,a]=sp(lab);
+    const em=/^\p{Extended_Pictographic}/u.test(f)?f.match(/^(\p{Extended_Pictographic}️?)\s*/u):null;
+    const left_=h('div',{class:'lab'},em?h('span',{class:'e'},em[1]):null,bi(em?f.slice(em[0].length):f,a));
+    const opts=h('div',{class:'opts'});
+    ex.c.forEach((c,k)=>{const b=h('button',{type:'button',class:'opt'},biS(c));b.addEventListener('click',()=>{
+      if(fin||b.disabled)return;
+      if(k===ci){fin=true;b.classList.add('ok');row.classList.add('done');[...opts.children].forEach(x=>{if(x!==b)x.disabled=true});if(!wrong)first++;if(--left===0)cb(first/n)}
+      else{wrong=true;b.classList.add('bad');b.disabled=true}
+    });opts.append(b)});
+    row.append(left_,opts);rows.append(row);
+  });
+  return [bi(ex.p,ex.pa,'p'),rows];
+}
+function fEx(ex,cb){
+  let i=0,first=0,wrong=false;const prompt=h('div',{class:'p'});const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  const show=()=>{const [f,a]=J[ex.g[i]];prompt.replaceChildren(bi('Touche : '+f.toLowerCase(),'المس: '+a))};show();
+  const fig=figure((k,c)=>{
+    if(i>=ex.g.length)return;
+    if(k===ex.g[i]){if(!wrong)first++;wrong=false;fig.dots.filter(d=>d.dataset.k===k).forEach(d=>d.classList.add('ok'));i++;
+      if(i>=ex.g.length){prompt.replaceChildren(bi('Bravo, tu connais tes articulations !','أحسنت! أنت تعرف مفاصلك!'));fb.replaceChildren();cb(first/ex.g.length)}
+      else{fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo !','أحسنت!')));show()}}
+    else{wrong=true;c.classList.add('on');setTimeout(()=>c.classList.remove('on'),500);fb.replaceChildren(h('div',{class:'m bad'},bi('Ce n\'est pas celle-là. Essaie encore !','ليس هذا المفصل، حاول مرة أخرى!')))}
+  });
+  return [bi(ex.p,ex.pa,'p'),prompt,h('div',{style:'max-width:240px;margin:0 auto;width:100%'},fig.svg),fb];
+}
+
+/* ---------- vues ---------- */
+const app=document.getElementById('app');
+const sec=(fr,ar,...kids)=>h('section',{class:'sec'},h('h2',null,h('span',null,fr),h('span',{class:'ar',lang:'ar',dir:'rtl'},ar)),...kids);
+const setAcc=(el,u)=>{const c=['u0','u1','u2'][u];el.style.setProperty('--acc','var(--'+c+')');el.style.setProperty('--accbg','var(--'+c+'bg)')};
+
+function home(){
+  const p=getP();const total=LESSONS.length;const doneN=LESSONS.filter(l=>p[l.id]).length;
+  const root=h('div',null,
+   h('div',{class:'hero'},h('h1',null,'Sciences CE1'),bi('Je découvre mon corps, mes sens et mon alimentation.','أكتشف جسمي وحواسي وتغذيتي.'),
+     h('div',{class:'meter',role:'progressbar','aria-valuemin':0,'aria-valuemax':total,'aria-valuenow':doneN,'aria-label':'Leçons terminées'},h('b',{style:'width:'+(doneN/total*100)+'%'})),
+     h('div',{class:'sub'},doneN+' leçon'+(doneN>1?'s':'')+' sur '+total+' terminée'+(doneN>1?'s':''))));
+  UNITS.forEach(U=>{
+    const s=h('section',{class:'unit'});setAcc(s,U.u);
+    s.append(h('h2',null,h('span',null,U.t),h('span',{class:'ar',lang:'ar',dir:'rtl'},U.ar)));
+    const g=h('div',{class:'grid'});
+    LESSONS.filter(l=>l.u===U.u).forEach(l=>g.append(h('a',{class:'card',href:'#'+l.id},
+      h('span',{class:'em','aria-hidden':'true'},l.em),h('span',{class:'n'},l.n),h('h3',null,l.fr),h('span',{class:'ar',lang:'ar',dir:'rtl'},l.ar),starEl(starsOf(p[l.id])))));
+    s.append(g);root.append(s);
+  });
+  const d=getP().defi;
+  root.append(h('a',{class:'defi',href:'#defi'},h('span',{style:'font-size:2.4rem'},'🏆'),h('div',null,h('h2',null,'Défi final'),h('span',{class:'ar',lang:'ar',dir:'rtl'},'التحدي النهائي: 10 أسئلة من كل الدروس'),h('div',null,'10 questions mélangées de toutes les leçons.'),d?starEl(starsOf(d)):null),h('span',{class:'go'},'Jouer')));
+  return root;
+}
+
+function lesson(l,idx){
+  const root=h('div',{class:'lesson'});setAcc(root,l.u);
+  root.append(h('a',{class:'back',href:'#home'},'← Toutes les leçons'));
+  root.append(h('div',{class:'lh'},h('span',{class:'em','aria-hidden':'true'},l.em),h('div',null,h('div',{class:'n'},l.n),h('h1',null,l.fr),h('div',{class:'ar',lang:'ar',dir:'rtl'},l.ar))));
+  // découvrir
+  root.append(sec('Je découvre','أكتشف',h('div',{class:'tabs2'},
+    h('div',{class:'box'},h('div',{class:'lab'},h('span',null,'Je m\'interroge'),h('span',{class:'ar'},'أتساءل')),bi(l.q[0],l.q[1])),
+    h('div',{class:'box'},h('div',{class:'lab'},h('span',null,'Je suppose'),h('span',{class:'ar'},'أفترض')),bi(l.s[0],l.s[1])))));
+  // retenir
+  const learn=h('div',{class:'learn'});
+  l.learn.forEach(([f,a])=>{const sp_=h('button',{type:'button',class:'pill','aria-label':'Écouter',style:'align-self:start;margin-top:6px'},'🔊 Écouter');sp_.addEventListener('click',()=>speak(f.replace(/[①②③④]/g,''),'fr-FR'));learn.append(h('div',{class:'box'},bi(f,a),sp_))});
+  root.append(sec('Je retiens','أتعلّم',learn));
+  // figure
+  if(l.fig){
+    const cap=h('div',{class:'cap'},bi('Touche un point rouge pour voir le nom de l\'articulation.','المس نقطة لترى اسم المفصل.'));
+    const fg=figure((k,c)=>{fg.dots.forEach(d=>d.classList.toggle('on',d.dataset.k===k));const [f,a]=J[k];cap.replaceChildren(h('div',{style:'font-family:var(--fd);font-size:1.5rem;font-weight:800'},f),h('div',{class:'ar',style:'font-size:1.3rem'},a));speak(f,'fr-FR')});
+    root.append(sec('Mon corps et mes articulations','جسمي ومفاصلي',h('div',{class:'box figbox'},h('div',null,fg.svg),cap)));
+  }
+  // mots
+  root.append(sec('Mots clés','كلمات مفتاحية',h('div',{class:'words'},l.words.map(([w])=>{const [f,a]=sp(w);const b=h('button',{type:'button',class:'word','aria-label':'Écouter '+f},h('span',{class:'sp','aria-hidden':'true'},'🔊'),bi(f,a));b.addEventListener('click',()=>speak(f,'fr-FR'));return b}))));
+  // exemples
+  const exg=h('div',{class:'exs'});
+  l.ex.forEach(([e,t,tag,k])=>{const [f,a]=sp(t);const tg=tag?sp(tag):null;exg.append(h('div',{class:'ex'},h('span',{class:'e','aria-hidden':'true'},e),h('div',{class:'t'},f),h('span',{class:'ar',lang:'ar',dir:'rtl'},a),tg?h('span',{class:'chip '+(k||'')},tg[0]+' · '+tg[1]):null))});
+  root.append(sec('Exemples','أمثلة',exg));
+  if(l.ex2){const g2=h('div',{class:'exs'});l.ex2.forEach(([e,t,tag,k])=>{const [f,a]=sp(t);const tg=sp(tag);g2.append(h('div',{class:'ex'},h('span',{class:'e'},e),h('div',{class:'t'},f),h('span',{class:'ar',lang:'ar',dir:'rtl'},a),h('span',{class:'chip '+(k||'')},tg[0]+' · '+tg[1])))});root.append(sec(l.ex2title[0],l.ex2title[1],g2))}
+  if(l.warn)root.append(h('div',{class:'note warn',style:'margin-top:18px'},h('div',{class:'lab'},'⚠️ Sécurité'),bi(l.warn[0],l.warn[1])));
+  if(l.fact)root.append(h('div',{class:'note fact',style:'margin-top:18px'},h('div',{class:'lab'},'Sais-tu que ? · هل تعلم؟'),bi(l.fact[0],l.fact[1])));
+  root.append(h('div',{class:'note',style:'margin-top:18px'},h('div',{class:'lab'},'Parlons-en · تحدّث معه'),bi(l.talk[0],l.talk[1])));
+  root.append(exercises(l.xs,l.id,idx));
+  return root;
+}
+
+function exercises(xs,id,idx,title){
+  const wrap=h('section',{class:'sec'});wrap.append(h('h2',null,h('span',null,'Je m\'entraîne'),h('span',{class:'ar',lang:'ar',dir:'rtl'},'أتدرّب')));
+  const res=[];const out=h('div');let n=0;
+  xs.forEach((ex,i)=>{
+    const card=h('div',{class:'xc'});card.append(h('div',{class:'k'},'Exercice '+(i+1)+' sur '+xs.length));
+    const f=ex.t==='q'?qEx:ex.t==='s'?sEx:fEx;
+    const parts=f(ex,sc=>{res[i]=sc;card.classList.add('fin');if(res.filter(x=>x!==undefined).length===xs.length)finish()});
+    card.append(...parts);out.append(card);
+  });
+  const resultBox=h('div');
+  function finish(){
+    const score=res.reduce((a,b)=>a+b,0);const total=xs.length;
+    if(id==='defi'){const p=getP();const old=p.defi;if(!old||score>=old.s)p.defi={s:score,t:total};store.set(p)}else saveScore(id,score,total);
+    const st=starsOf({s:score,t:total});
+    const next=(typeof idx==='number'&&LESSONS[idx+1])?LESSONS[idx+1]:null;
+    const msg=st===3?['Super champion !','أنت بطل رائع!']:st===2?['Très bien !','أحسنت جدًا!']:['Bien joué, recommence pour avoir plus d\'étoiles !','أحسنت، أعد المحاولة لتحصل على نجوم أكثر!'];
+    resultBox.replaceChildren(h('div',{class:'result'},h('div',{class:'big','aria-label':st+' étoiles'},'★'.repeat(st)+'☆'.repeat(3-st)),h('h2',null,msg[0]),h('div',{class:'ar'},msg[1]),h('div',null,Math.round(score*10)/10+' / '+total),
+      h('div',{class:'btns'},h('button',{type:'button',class:'btn alt',onclick:()=>route(true)},'Recommencer · إعادة'),next?h('a',{class:'btn',href:'#'+next.id},'Leçon suivante →'):null,h('a',{class:'btn alt',href:'#home'},'Accueil'))));
+    resultBox.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  wrap.append(out,resultBox);return wrap;
+}
+
+function defi(){
+  const pool=[];LESSONS.forEach(l=>l.xs.forEach(x=>{if(x.t==='q')pool.push(x);else if(x.t==='s')x.i.forEach(it=>pool.push({t:'q',p:x.p,pa:x.pa,o:x.c.slice(),a:it[1],w:'',_label:it[0]}))}));
+  const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const pick=shuffle(pool).slice(0,10).map(x=>{if(!x._label)return x;const [f,a]=sp(x._label);const clean=s=>s.replace(/^\p{Extended_Pictographic}️?\s*/u,'');return Object.assign({},x,{p:clean(f),pa:a,_label:null})});
+  const root=h('div',{class:'lesson'});setAcc(root,1);
+  root.append(h('a',{class:'back',href:'#home'},'← Toutes les leçons'));
+  root.append(h('div',{class:'lh'},h('span',{class:'em'},'🏆'),h('div',null,h('div',{class:'n'},'Toutes les leçons'),h('h1',null,'Défi final'),h('div',{class:'ar'},'التحدي النهائي: 10 أسئلة مختلطة'))));
+  root.append(exercises(pick,'defi',null));return root;
+}
+
+/* ---------- routage ---------- */
+function route(force){
+  const id=(location.hash||'#home').slice(1);
+  let v;
+  if(id==='defi')v=defi();
+  else{const i=LESSONS.findIndex(l=>l.id===id);v=i>=0?lesson(LESSONS[i],i):home()}
+  app.replaceChildren(v);
+  if(!force)window.scrollTo(0,0);else window.scrollTo(0,0);
+}
+addEventListener('hashchange',()=>route());
+const arBtn=document.getElementById('arBtn');
+let arOn=true;try{arOn=localStorage.getItem('sciences-ar')!=='0'}catch(e){}
+function applyAr(){document.body.classList.toggle('noar',!arOn);arBtn.setAttribute('aria-pressed',String(arOn))}
+arBtn.addEventListener('click',()=>{arOn=!arOn;try{localStorage.setItem('sciences-ar',arOn?'1':'0')}catch(e){}applyAr()});
+applyAr();route();
+</script>

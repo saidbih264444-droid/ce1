@@ -1,0 +1,522 @@
+<title>Français CE1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Cairo:wght@500;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: carnet d'école. Accueil en grille de séances par unité, leçon en une colonne qui défile, exercices en cartes. */
+:root{
+  --bg:#EEF5F9;--surface:#FFFFFF;--ink:#15303D;--muted:#5B7280;--line:#D3E2EA;
+  --u0:#2C78D2;--u0bg:#DEEAFA;--u1:#1E9E6A;--u1bg:#DDF3E9;--u2:#D63F7E;--u2bg:#FBE1EC;
+  --ok:#1E9E6A;--okbg:#DDF3E9;--bad:#D6453D;--badbg:#FBE4E2;--sun:#F4B72E;--ar:#0F5C7A;
+  --fd:'Baloo 2','Trebuchet MS',system-ui,sans-serif;--fb:'Nunito',system-ui,'Segoe UI',sans-serif;--fa:'Cairo','Noto Naskh Arabic','Segoe UI',Tahoma,sans-serif;
+  --acc:var(--u0);--accbg:var(--u0bg);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1C24;--surface:#182933;--ink:#E6F0F5;--muted:#9FB5C2;--line:#2A404D;
+  --u0:#6AA8F0;--u0bg:#1B3050;--u1:#46C592;--u1bg:#17372C;--u2:#F0689D;--u2bg:#3D1F2C;
+  --ok:#46C592;--okbg:#17372C;--bad:#F0766E;--badbg:#3F2220;--sun:#F4C45A;--ar:#8FD3F0;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1C24;--surface:#182933;--ink:#E6F0F5;--muted:#9FB5C2;--line:#2A404D;
+  --u0:#6AA8F0;--u0bg:#1B3050;--u1:#46C592;--u1bg:#17372C;--u2:#F0689D;--u2bg:#3D1F2C;
+  --ok:#46C592;--okbg:#17372C;--bad:#F0766E;--badbg:#3F2220;--sun:#F4C45A;--ar:#8FD3F0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:500 18px/1.5 var(--fb);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:860px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,circle:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.ar{font-family:var(--fa);color:var(--ar);direction:rtl;text-align:right;font-weight:500;line-height:1.7}
+.bi{display:flex;flex-direction:column;gap:0;min-width:0}
+body.noar .ar{display:none}
+h1,h2,h3{font-family:var(--fd);line-height:1.15;margin:0;text-wrap:balance}
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.brand{font-family:var(--fd);font-weight:800;font-size:1.3rem;color:var(--ink);text-decoration:none;margin-inline-end:auto;display:flex;align-items:center;gap:8px}
+.brand i{font-style:normal;background:var(--u1);color:#fff;border-radius:10px;padding:0 9px;font-size:1rem}
+.pill{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 14px;min-height:40px;font-weight:800;font-size:.9rem}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* home */
+.hero{padding:24px 0 8px;display:grid;gap:6px}
+.hero h1{font-size:clamp(2rem,7vw,3rem)}
+.hero .sub{color:var(--muted)}
+.meter{height:12px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:12px}
+.meter b{display:block;height:100%;background:var(--u1);border-radius:99px;transition:width .5s}
+.unit{margin-top:30px}
+.unit h2{font-size:1.35rem;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.unit h2 span.tag{font-size:.8rem;font-family:var(--fb);font-weight:800;background:var(--accbg);color:var(--acc);padding:2px 10px;border-radius:8px;letter-spacing:.04em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}
+.card{display:flex;flex-direction:column;gap:6px;text-align:start;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px;text-decoration:none;color:inherit;min-width:0;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--acc)}
+.card .em{font-size:2rem;line-height:1}
+.card .n{font-size:.78rem;font-weight:800;color:var(--acc);letter-spacing:.05em;text-transform:uppercase}
+.card h3{font-size:1.1rem}
+.stars{font-size:1.05rem;letter-spacing:2px;color:var(--sun);margin-top:auto}
+.stars .off{color:var(--line)}
+.soon{border-style:dashed;opacity:.75}
+.defi{margin-top:30px;background:var(--ink);color:var(--bg);border-radius:20px;padding:20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;text-decoration:none}
+.defi h2{font-size:1.5rem}.defi .ar{color:var(--sun)}
+.defi .go{margin-inline-start:auto;background:var(--sun);color:#15303D;border-radius:12px;padding:10px 18px;font-weight:800}
+/* lesson */
+.lesson{--pad:18px}
+.back{display:inline-flex;margin:16px 0 4px;color:var(--muted);font-weight:800;text-decoration:none;min-height:40px;align-items:center}
+.lh{background:var(--accbg);border-radius:22px;padding:20px;display:flex;gap:16px;align-items:center}
+.lh .em{font-size:3.2rem;line-height:1}
+.lh .n{font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
+.lh h1{font-size:clamp(1.5rem,5.5vw,2.1rem);margin:2px 0}
+.sec{margin-top:28px}
+.sec>h2{font-size:1.4rem;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:10px}
+.sec>h2 .ar{font-size:1.15rem;font-weight:700}
+.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
+.box .lab{font-weight:800;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:var(--acc);display:flex;justify-content:space-between;gap:8px}
+.learn{display:grid;gap:10px}
+.learn .box{border-inline-start:6px solid var(--acc)}
+.words{display:flex;flex-wrap:wrap;gap:10px}
+.word{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:8px 14px;min-height:56px}
+.word:hover{border-color:var(--acc)}
+.word .sp{font-size:1.1rem}
+.exs{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.ex{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:2px;justify-items:start;min-width:0}
+.ex .e{font-size:2rem;line-height:1.1}
+.ex .t{font-weight:800;margin-top:4px;overflow-wrap:anywhere}
+.chip{display:inline-block;margin-top:6px;font-size:.8rem;font-weight:800;background:var(--accbg);color:var(--acc);border-radius:8px;padding:1px 10px}
+.chip.a{background:var(--okbg);color:var(--ok)}.chip.b{background:var(--badbg);color:var(--bad)}
+.note{border-radius:16px;padding:14px 16px;background:var(--surface);border:2px dashed var(--line);display:grid;gap:2px}
+.note .lab{font-family:var(--fd);font-weight:800;font-size:1.1rem}
+.note.warn{border-color:var(--bad)}.note.fact{border-color:var(--sun)}
+.figbox{display:grid;grid-template-columns:minmax(140px,220px) 1fr;gap:16px;align-items:center}
+.figbox svg{width:100%;height:auto;max-height:380px}
+.figbox .cap{min-height:3.6em}
+.fig line,.fig circle.head{stroke:var(--ink);stroke-width:5;stroke-linecap:round;fill:none}
+.fig .j{fill:var(--acc);stroke:var(--surface);stroke-width:3;cursor:pointer;transition:r .12s}
+.fig .j:hover{r:12}
+.fig .j.on{fill:var(--sun)}
+.fig .j.ok{fill:var(--ok)}
+/* exercises */
+.xc{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:12px;margin-bottom:14px}
+.xc.fin{border-color:var(--ok)}
+.xc .k{font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.xc .p{font-weight:800;font-size:1.1rem}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:8px 16px;min-height:52px;text-align:start;min-width:0}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad);opacity:.7}
+.opt:disabled{cursor:default}
+.fb{min-height:0}
+.fb .m{border-radius:12px;padding:10px 14px}
+.fb .m.ok{background:var(--okbg);color:var(--ink)}
+.fb .m.bad{background:var(--badbg);color:var(--ink)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row.done{opacity:.95}
+.row .lab{display:flex;gap:10px;align-items:center;min-width:0}
+.row .lab .e{font-size:1.7rem}
+.row .opts{justify-content:flex-end;gap:8px}
+.row .opt{min-height:44px;padding:4px 12px;font-size:.95rem}
+@media (max-width:560px){.row{grid-template-columns:1fr}.row .opts{justify-content:flex-start}.tabs2,.figbox{grid-template-columns:1fr}}
+.result{text-align:center;display:grid;gap:8px;justify-items:center;background:var(--accbg);border-radius:22px;padding:24px 16px}
+.result .big{font-size:2.6rem;letter-spacing:6px;color:var(--sun)}
+.result h2{font-size:1.7rem}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800;text-decoration:none;min-height:48px;display:inline-flex;align-items:center}
+.btn.alt{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="#home"><i>CE1</i> Français</a>
+    <button class="pill" id="arBtn" type="button" aria-pressed="true">عربي</button>
+  </div>
+  <main id="app"></main>
+</div>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const h=(tag,props,...kids)=>{const e=document.createElement(tag);for(const k in props||{}){const v=props[k];if(k==='class')e.className=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v);}kids.flat(9).forEach(c=>{if(c==null||c===false)return;e.append(c.nodeType?c:document.createTextNode(c));});return e;};
+const sp=s=>s.split('|');
+const bi=(fr,ar,cls)=>h('div',{class:'bi '+(cls||'')},h('span',{class:'fr'},fr),ar?h('span',{class:'ar',lang:'ar',dir:'rtl'},ar):null);
+const biS=s=>{const [f,a]=sp(s);return bi(f,a)};
+const store={get(){try{return JSON.parse(localStorage.getItem('francais-ce1')||'{}')}catch(e){return{}}},set(o){try{localStorage.setItem('francais-ce1',JSON.stringify(o))}catch(e){}}};
+const speak=(t,l)=>{try{const u=new SpeechSynthesisUtterance(t);u.lang=l||'fr-FR';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
+const vf=(p,pa,truth,w)=>({t:'q',p,pa,o:['Vrai|صحيح','Faux|خطأ'],a:truth?0:1,w});
+const J={cou:['Le cou','العنق'],epaule:["L'épaule",'الكتف'],coude:['Le coude','المرفق'],poignet:['Le poignet','المعصم'],hanche:['La hanche','الورك'],genou:['Le genou','الركبة'],cheville:['La cheville','الكاحل']};
+const SENS5=['La vue|البصر','L\'ouïe|السمع','L\'odorat|الشم','Le goût|الذوق','Le toucher|اللمس'];
+
+/* ---------- contenu du cahier de français ---------- */
+const LESSONS=[
+{id:"g1",u:0,n:"Grammaire · Leçon 1",em:"📝",fr:"La phrase",ar:"الجملة",
+ q:["Dans la liste « La maîtresse attend Martine. » / « Dans jouent arbres enfants. » / « Quel beau cartable ! », combien y a-t-il de phrases ?","في القائمة: «La maîtresse attend Martine.» / «Dans jouent arbres enfants.» / «Quel beau cartable !» كم جملة توجد؟"],
+ s:["Il y a 2 phrases. « Dans jouent arbres enfants » est une suite de mots sans sens.","توجد جملتان. «Dans jouent arbres enfants» كلمات مبعثرة بلا معنى."],
+ learn:[["La phrase est une suite de mots qui a un sens.","الجملة هي سلسلة من الكلمات لها معنى."],
+        ["La phrase commence toujours par une lettre majuscule.","تبدأ الجملة دائمًا بحرف كبير (Majuscule)."],
+        ["Elle se termine par un point ( . ), un point d'interrogation ( ? ) ou un point d'exclamation ( ! ).","وتنتهي بنقطة ( . ) أو علامة استفهام ( ? ) أو علامة تعجب ( ! )."]],
+ words:[["Phrase|جملة"],["Majuscule|حرف كبير"],["Point|نقطة"],["Point d'interrogation|علامة استفهام"],["Point d'exclamation|علامة تعجب"],["Sens|معنى"]],
+ ex:[["📘","La maîtresse attend Martine.|المعلمة تنتظر مارتين.","Se termine par un point .|تنتهي بنقطة","a"],
+     ["❓","Viens-tu à l'école avec moi ?|هل تأتي معي إلى المدرسة؟","Point d'interrogation ?|علامة استفهام","b"],
+     ["❗","Quel beau cartable !|ما أجمل هذه الحقيبة!","Point d'exclamation !|علامة تعجب","a"],
+     ["🚫","Dans jouent arbres enfants|كلمات بلا ترتيب","Ce n'est pas une phrase|ليست جملة","b"]],
+ talk:["Dis une phrase sur ta journée. Par quel signe se termine-t-elle ?","ليقل جملة عن يومه ثم يذكر العلامة التي تنتهي بها."],
+ xs:[
+  {t:"s",p:"J'identifie les phrases.",pa:"أحدد الجمل.",c:["C'est une phrase|هذه جملة","Ce n'est pas une phrase|ليست جملة"],i:[["La fillette porte une jolie robe.|ترتدي الطفلة فستانًا جميلًا.",0],["Martine parle de ses vacances.|مارتين تتحدث عن عطلتها.",0],["Construit la maîtresse cantine la.|كلمات مرتبة خطأ.",1],["Quel est le titre de cet album ?|ما عنوان هذا الألبوم؟",0],["Qu'il est sage, ce garçon !|ما أهدأ هذا الولد!",0]]},
+  {t:"q",p:"Par quel signe se termine « Viens-tu à l'école avec moi » ?",pa:"بأي علامة تنتهي «Viens-tu à l'école avec moi»؟",o:["Un point ( . )|نقطة","Un point d'interrogation ( ? )|علامة استفهام","Un point d'exclamation ( ! )|علامة تعجب"],a:1,w:"C'est une question, donc on met un point d'interrogation.|هذا سؤال، لذلك نضع علامة استفهام."},
+  {t:"q",p:"Par quel signe se termine « Quel beau cadeau » ?",pa:"بأي علامة تنتهي «Quel beau cadeau»؟",o:["Un point ( . )|نقطة","Un point d'interrogation ( ? )|علامة استفهام","Un point d'exclamation ( ! )|علامة تعجب"],a:2,w:"On exprime la surprise : point d'exclamation.|نعبّر عن الإعجاب: علامة تعجب."},
+  {t:"o",p:"Je remets les mots en ordre pour faire une phrase.",pa:"أرتب الكلمات لأكوّن جملة.",o:["Laura","se réveille","tôt."],w:"Laura se réveille tôt.|Laura se réveille tôt."},
+  {t:"o",p:"Je remets les mots en ordre pour faire une phrase.",pa:"أرتب الكلمات لأكوّن جملة.",o:["Où","est","mon","stylo ?"],w:"Où est mon stylo ?|Où est mon stylo ?"},
+  {t:"o",p:"Je remets les mots en ordre pour faire une phrase.",pa:"أرتب الكلمات لأكوّن جملة.",o:["Les enfants","plantent","des fleurs."],w:"Les enfants plantent des fleurs.|Les enfants plantent des fleurs."},
+  {t:"q",p:"Comment commence toujours une phrase ?",pa:"بماذا تبدأ الجملة دائمًا؟",o:["Par une lettre majuscule|بحرف كبير","Par un point|بنقطة","Par un chiffre|برقم"],a:0,w:"La première lettre est toujours une majuscule.|الحرف الأول يكون دائمًا حرفًا كبيرًا."}
+ ]},
+
+{id:"g2",u:0,n:"Grammaire · Leçon 2",em:"🔤",fr:"Les articles",ar:"أدوات التعريف والتنكير",
+ q:["Dans « Le maître écrit un poème », quel petit mot est devant chaque nom ?","في «Le maître écrit un poème» ما الكلمة الصغيرة التي تأتي قبل كل اسم؟"],
+ s:["Ce sont « le » et « un » : des articles.","إنهما «le» و«un»: إنها الأدوات (articles)."],
+ learn:[["L'article est un mot qui précède le nom.","الأداة (article) كلمة تأتي قبل الاسم."],
+        ["Les articles définis sont : le, la, l', les. Exemples : le garçon, la fille, l'hôtel, les parents.","أدوات التعريف: le, la, l', les. أمثلة: le garçon, la fille, l'hôtel, les parents. نستعملها لشيء معروف ومحدد."],
+        ["Les articles indéfinis sont : un, une, des. Exemples : un garçon, une fille, des parents.","أدوات التنكير: un, une, des. أمثلة: un garçon, une fille, des parents. نستعملها لشيء غير محدد."],
+        ["Astuce : le / un = masculin. la / une = féminin. les / des = pluriel.","نصيحة: le / un للمذكر. la / une للمؤنث. les / des للجمع."]],
+ words:[["Article|أداة"],["Nom|اسم"],["Défini|معرّف"],["Indéfini|منكّر"],["Masculin|مذكر"],["Féminin|مؤنث"]],
+ ex:[["👦","le garçon|الولد (المعروف)","Article défini|أداة تعريف","a"],["👧","la fille|البنت (المعروفة)","Article défini|أداة تعريف","a"],["🏨","l'hôtel|الفندق","Article défini|أداة تعريف","a"],["👪","les parents|الوالدان","Article défini|أداة تعريف","a"],
+     ["👦","un garçon|ولد (أي ولد)","Article indéfini|أداة تنكير","b"],["👧","une fille|بنت (أي بنت)","Article indéfini|أداة تنكير","b"],["👪","des parents|والدان (غير محددين)","Article indéfini|أداة تنكير","b"]],
+ talk:["Montre un objet de la maison : dis « le… » ou « un… ». Quelle est la différence ?","يشير إلى أشياء في البيت ويقول «le…» أو «un…» ثم يشرح الفرق."],
+ xs:[
+  {t:"s",p:"Cet article est-il défini ou indéfini ?",pa:"هل هذه الأداة للتعريف أم للتنكير؟",c:["Défini|تعريف","Indéfini|تنكير"],i:[["le garçon|الولد",0],["une fille|بنت",1],["les parents|الوالدان",0],["des élèves|تلاميذ",1],["l'école|المدرسة",0],["un livre|كتاب",1]]},
+  {t:"q",p:"Dans « La fillette a vu un chat sur le mur », quel est l'article indéfini ?",pa:"في «La fillette a vu un chat sur le mur» ما أداة التنكير؟",o:["la|la","un|un","le|le"],a:1,w:"« un » est indéfini. « la » et « le » sont définis.|«un» للتنكير، أما «la» و«le» فللتعريف."},
+  {t:"q",p:"Dans « Elle écrit des poèmes », « des » est un article…",pa:"في «Elle écrit des poèmes» الكلمة «des» أداة…",o:["défini|تعريف","indéfini|تنكير"],a:1,w:"un, une, des : articles indéfinis.|un, une, des: أدوات تنكير."},
+  {t:"q",p:"Dans « La cloche sonne », « La » est un article…",pa:"في «La cloche sonne» الكلمة «La» أداة…",o:["défini|تعريف","indéfini|تنكير"],a:0,w:"le, la, l', les : articles définis.|le, la, l', les: أدوات تعريف."},
+  {t:"q",p:"Quels sont les articles définis ?",pa:"ما هي أدوات التعريف؟",o:["le, la, l', les|le, la, l', les","un, une, des|un, une, des"],a:0,w:"Défini : le, la, l', les.|أدوات التعريف: le, la, l', les."}
+ ]},
+
+{id:"c1",u:1,n:"Conjugaison · Leçon 1",em:"⏳",fr:"Le passé, le présent, le futur",ar:"الماضي والحاضر والمستقبل",
+ q:["Hier, Nisrine est revenue des vacances. Aujourd'hui, elle range ses jouets. Demain, elle ira à l'école. Quand se passe chaque action ?","أمس رجعت نسرين من العطلة. اليوم ترتب ألعابها. غدًا ستذهب إلى المدرسة. متى تحدث كل حالة؟"],
+ s:["Hier : avant. Aujourd'hui : maintenant. Demain : après.","Hier: قبل. Aujourd'hui: الآن. Demain: بعد."],
+ learn:[["Le passé indique une action qui s'est déroulée avant : hier, la semaine dernière, l'année dernière, il y a un mois, autrefois…","الماضي (passé) يدل على عمل وقع من قبل: أمس، الأسبوع الماضي، السنة الماضية، منذ شهر…"],
+        ["Le présent indique une action qui se déroule maintenant : aujourd'hui, maintenant, en ce moment, ce matin…","الحاضر (présent) يدل على عمل يحدث الآن: اليوم، الآن، في هذه اللحظة، هذا الصباح…"],
+        ["Le futur indique une action qui se déroulera après : demain, la semaine prochaine, l'année prochaine, bientôt, dans un mois…","المستقبل (futur) يدل على عمل سيحدث بعد ذلك: غدًا، الأسبوع القادم، السنة القادمة، قريبًا…"]],
+ words:[["Passé|الماضي"],["Présent|الحاضر"],["Futur|المستقبل"],["Hier|أمس"],["Aujourd'hui|اليوم"],["Demain|غدًا"]],
+ ex:[["⏪","Hier, Nisrine est revenue des vacances.|أمس رجعت نسرين من العطلة.","Passé|ماضٍ","b"],["⏺️","Aujourd'hui, elle range ses jouets.|اليوم ترتب ألعابها.","Présent|حاضر","a"],["⏩","Demain, elle ira à l'école.|غدًا ستذهب إلى المدرسة.","Futur|مستقبل",""]],
+ talk:["Dis ce que tu as fait hier, ce que tu fais maintenant, ce que tu feras demain.","ليقل ماذا فعل أمس، وماذا يفعل الآن، وماذا سيفعل غدًا."],
+ xs:[
+  {t:"s",p:"J'écris : passé, présent ou futur ?",pa:"أصنّف: ماضٍ أم حاضر أم مستقبل؟",c:["Passé|ماضٍ","Présent|حاضر","Futur|مستقبل"],i:[["hier|أمس",0],["aujourd'hui|اليوم",1],["demain|غدًا",2],["la semaine dernière|الأسبوع الماضي",0],["en ce moment|في هذه اللحظة",1],["l'année prochaine|السنة القادمة",2],["il y a une heure|منذ ساعة",0],["bientôt|قريبًا",2]]},
+  {t:"s",p:"Je relève l'expression du temps et je dis : passé, présent ou futur ?",pa:"أحدد التعبير عن الزمن وأقول: ماضٍ أم حاضر أم مستقبل؟",c:["Passé|ماضٍ","Présent|حاضر","Futur|مستقبل"],i:[["Papa reviendra dans une semaine.|سيعود أبي بعد أسبوع.",2],["Autrefois, les élèves écrivaient avec des plumes.|في الماضي كان التلاميذ يكتبون بالريشة.",0],["Il pleut en ce moment.|تمطر الآن.",1],["La semaine dernière, nous avons visité une ferme.|الأسبوع الماضي زرنا ضيعة.",0],["Demain, je participerai au concours de dictée.|غدًا سأشارك في مسابقة الإملاء.",2]]},
+  {t:"q",p:"Je complète : « ______ fait beau. »",pa:"أكمل: «______ fait beau.»",o:["Aujourd'hui|اليوم","Hier|أمس","L'année prochaine|السنة القادمة"],a:0,w:"Il fait beau maintenant : présent.|الطقس جميل الآن: حاضر."},
+  {t:"q",p:"Je complète : « ______, mon cousin était malade. »",pa:"أكمل: «______, mon cousin était malade.»",o:["Demain|غدًا","Hier|أمس","Dans quelques mois|بعد بضعة أشهر"],a:1,w:"« était » : c'est le passé, donc « hier ».|«était» ماضٍ، لذلك «hier»."},
+  {t:"q",p:"Je complète : « ______ je serai en CE2. »",pa:"أكمل: «______ je serai en CE2.»",o:["L'année prochaine|السنة القادمة","Il y a une heure|منذ ساعة","Hier|أمس"],a:0,w:"« serai » : c'est le futur.|«serai» مستقبل."}
+ ]},
+
+{id:"c2",u:1,n:"Conjugaison · Leçon 2",em:"🏃",fr:"L'infinitif du verbe",ar:"المصدر (الفعل غير المصرَّف)",
+ q:["Nada mange une banane. Elle vient de manger à la cantine. Le mot « manger » est-il écrit de la même façon ?","ندى تأكل موزة. وقد أنهت للتو الأكل في المقصف. الكلمة «manger» تتغير أم لا؟"],
+ s:["« mange » est conjugué. « manger » est à l'infinitif.","«mange» مصرَّف. «manger» في المصدر (infinitif)."],
+ learn:[["Le verbe est un mot qui indique une action. Exemple : Lili range ses affaires.","الفعل (verbe) كلمة تدل على عمل. مثال: Lili range ses affaires."],
+        ["Le verbe est à l'infinitif quand il n'est pas conjugué dans la phrase. Exemple : Lili vient de ranger ses affaires.","يكون الفعل في المصدر (infinitif) عندما لا يكون مصرَّفًا في الجملة. مثال: Lili vient de ranger."],
+        ["L'infinitif est la forme du verbe utilisée pour le nommer. Exemple : Nous dessinons : dessiner.","المصدر هو الصيغة التي نسمّي بها الفعل. مثال: Nous dessinons ← dessiner."],
+        ["Astuce : l'infinitif se termine souvent par -er, -ir, -re ou -oir.","نصيحة: ينتهي المصدر غالبًا بـ -er أو -ir أو -re أو -oir."]],
+ words:[["Verbe|فعل"],["Action|عمل / حدث"],["Infinitif|المصدر"],["Conjugué|مصرَّف"]],
+ ex:[["🚸","Les enfants traversent la rue.|الأطفال يعبرون الشارع.","traversent → traverser|traverser","a"],["🍌","Nada mange une banane.|ندى تأكل موزة.","mange → manger|manger","a"],["🍽️","Elle vient de manger.|أنهت للتو الأكل.","manger est à l'infinitif|manger مصدر","b"],["🧹","Lili range ses affaires.|ليلى ترتب أغراضها.","range → ranger|ranger","a"]],
+ talk:["Je dis une phrase avec « dormir », « jouer », « lire » : ils sont à l'infinitif ?","يكوّن جملًا بالأفعال dormir وjouer وlire ويقول متى تكون في المصدر."],
+ xs:[
+  {t:"s",p:"Je cherche les verbes à l'infinitif.",pa:"أبحث عن الأفعال في المصدر.",c:["Infinitif|مصدر","Verbe conjugué|فعل مصرَّف"],i:[["visiter|زار",0],["nous cherchons|نحن نبحث",1],["finir|أنهى",0],["Lucie écrit|لوسي تكتب",1],["dormir|ينام",0],["nous lisons|نحن نقرأ",1],["partir|يغادر",0],["Sara crie|سارة تصرخ",1]]},
+  {t:"q",p:"« Samar termine ses devoirs. » Quel est l'infinitif de « termine » ?",pa:"«Samar termine ses devoirs.» ما مصدر «termine»؟",o:["terminer|terminer","terminé|terminé","terminons|terminons"],a:0,w:"L'infinitif est : terminer.|المصدر هو: terminer."},
+  {t:"q",p:"« Elle joue avec ses copines. » Quel est l'infinitif de « joue » ?",pa:"«Elle joue avec ses copines.» ما مصدر «joue»؟",o:["jouer|jouer","joué|joué","jouons|jouons"],a:0,w:"joue → jouer.|joue ← jouer."},
+  {t:"q",p:"« Je dors à huit heures du soir. » Quel est l'infinitif de « dors » ?",pa:"«Je dors à huit heures du soir.» ما مصدر «dors»؟",o:["dormir|dormir","dormer|dormer","dort|dort"],a:0,w:"dors → dormir.|dors ← dormir."},
+  {t:"q",p:"« Papa fait les courses. » Quel est l'infinitif de « fait » ?",pa:"«Papa fait les courses.» ما مصدر «fait»؟",o:["faire|faire","fait|fait","fais|fais"],a:0,w:"fait → faire.|fait ← faire."},
+  {t:"q",p:"« Jules ne finit jamais son plat. » Quel est l'infinitif de « finit » ?",pa:"«Jules ne finit jamais son plat.» ما مصدر «finit»؟",o:["finir|finir","finis|finis","finissons|finissons"],a:0,w:"finit → finir.|finit ← finir."}
+ ]},
+
+{id:"o1",u:2,n:"Orthographe · Leçon 1",em:"🔡",fr:"La lettre « c »",ar:"الحرف c (يُنطق k أو s)",
+ q:["Dans « camion » et « cinéma », la lettre « c » se prononce-t-elle de la même façon ?","في «camion» و«cinéma» هل يُنطق الحرف c بنفس الطريقة؟"],
+ s:["Non. Dans « camion » on dit [k], dans « cinéma » on dit [s].","لا. في camion نقول [k]، وفي cinéma نقول [s]."],
+ learn:[["« c » se prononce [k] devant a, o, u : un camion, une école, une cuisine.","c يُنطق [k] قبل a وo وu: un camion, une école, une cuisine."],
+        ["« c » se prononce [k] devant une consonne : écrire, un clavier. Et à la fin des mots : bouc, kayac, truc, bac.","c يُنطق [k] قبل حرف ساكن: écrire, un clavier. وفي آخر الكلمة: bouc, kayac, truc, bac."],
+        ["« c » se prononce [s] devant i, e, y : cinéma, cerise, cygne.","c يُنطق [s] قبل i وe وy: cinéma, cerise, cygne."],
+        ["Devant a, o, u, on écrit « ç » (c cédille) pour dire [s] : un français, une leçon, déçu.","قبل a وo وu نكتب ç (c cédille) لننطق [s]: un français, une leçon, déçu."]],
+ words:[["Lettre|حرف"],["Consonne|حرف ساكن"],["Cédille|ç (سيديل)"],["Prononcer|ينطق"]],
+ ex:[["🚚","un camion|شاحنة","c devant a → [k]|c قبل a ← [k]","a"],["🍳","une cuisine|مطبخ","c devant u → [k]|c قبل u ← [k]","a"],["⌨️","un clavier|لوحة مفاتيح","c devant l → [k]|c قبل l ← [k]","a"],["🐐","un bouc|تيس","c à la fin → [k]|c في الآخر ← [k]","a"],
+     ["🎬","le cinéma|السينما","c devant i → [s]|c قبل i ← [s]","b"],["🍒","une cerise|كرزة","c devant e → [s]|c قبل e ← [s]","b"],["🦢","un cygne|بجعة","c devant y → [s]|c قبل y ← [s]","b"],["📚","une leçon|درس","ç devant o → [s]|ç قبل o ← [s]","b"]],
+ talk:["Dis « camion » puis « cinéma » : entends-tu la différence ?","ينطق camion ثم cinéma ويلاحظ الفرق في صوت حرف c."],
+ xs:[
+  {t:"s",p:"Dans ce mot, la lettre « c » se prononce [s] ou [k] ?",pa:"في هذه الكلمة، هل يُنطق الحرف c [s] أم [k]؟",c:["[s] comme « cinéma »|[s]","[k] comme « camion »|[k]"],i:[["cerise|كرزة",0],["camion|شاحنة",1],["compter|يعدّ",1],["copier|ينسخ",1],["crocodile|تمساح",1],["cinéma|سينما",0],["bouc|تيس",1],["police|شرطة",0],["cirque|سيرك",0],["coq|ديك",1],["crier|يصرخ",1],["balancer|يتأرجح",0]]},
+  {t:"s",p:"Je classe les mots dans le tableau.",pa:"أصنّف الكلمات في الجدول.",c:["« c » se prononce [s]|c ينطق [s]","« c » se prononce [k]|c ينطق [k]"],i:[["maçon|بنّاء",0],["carte|بطاقة",1],["microbe|جرثومة",1],["cymbale|صنج",0],["ceinture|حزام",0],["lac|بحيرة",1],["cil|رمش",0],["casque|خوذة",1],["façade|واجهة",0],["éclater|ينفجر",1],["faucon|صقر",1],["décider|يقرر",0]]},
+  {t:"q",p:"Pour dire [s] devant « a », « o » ou « u », j'écris…",pa:"لنطق [s] قبل a أو o أو u أكتب…",o:["ç (c cédille)|ç","c|c"],a:0,w:"leçon, français, déçu : on écrit ç.|leçon, français, déçu: نكتب ç."},
+  {t:"q",p:"Dans « cygne », pourquoi « c » se prononce-t-il [s] ?",pa:"في «cygne» لماذا يُنطق c [s]؟",o:["Parce qu'il est devant « y »|لأنه قبل y","Parce qu'il est devant « a »|لأنه قبل a","Parce qu'il est à la fin du mot|لأنه في آخر الكلمة"],a:0,w:"Devant i, e, y : [s].|قبل i وe وy ينطق [s]."}
+ ]},
+
+{id:"o2",u:2,n:"Orthographe · Leçon 2",em:"✏️",fr:"« m » devant « m », « p » et « b »",ar:"الحرف m قبل m وp وb",
+ q:["Dans « lampe », « chambre » et « emmener », quelle lettre voit-on avant « p », « b » et « m » ?","في «lampe» و«chambre» و«emmener» ما الحرف الذي نراه قبل p وb وm؟"],
+ s:["On voit la lettre « m ».","نرى الحرف m."],
+ learn:[["Devant m, p et b, on écrit « m » au lieu de « n ».","قبل m وp وb نكتب m بدل n."],
+        ["Exemples : une lampe, emmener, chambre, champion, jambe.","أمثلة: une lampe, emmener, chambre, champion, jambe."],
+        ["Sauf dans quelques mots comme : bonbon, bonbonnière.","ما عدا بعض الكلمات مثل: bonbon, bonbonnière."]],
+ words:[["Lampe|مصباح"],["Chambre|غرفة"],["Champion|بطل"],["Bonbon|حلوى"]],
+ ex:[["💡","une lampe|مصباح","m devant p|m قبل p","a"],["🛏️","une chambre|غرفة","m devant b|m قبل b","a"],["🏆","un champion|بطل","m devant p|m قبل p","a"],["🍬","un bonbon|حلوى","Exception ! n devant b|استثناء! n قبل b","b"]],
+ talk:["Cherche 3 mots avec « mp » ou « mb » dans la maison.","يبحث عن ثلاث كلمات فيها mp أو mb في البيت."],
+ xs:[
+  {t:"s",p:"Quelle lettre manque : n ou m ?",pa:"أي حرف ناقص: n أم m؟",c:["n","m"],i:[["e_trée (entrée)|مدخل",0],["cha_pion (champion)|بطل",1],["po_t (pont)|جسر",0],["la_pe (lampe)|مصباح",1],["cha_bre (chambre)|غرفة",1],["te_te (tente)|خيمة",0],["ja_be (jambe)|ساق",1],["mo_de (monde)|عالم",0]]},
+  {t:"q",p:"Devant « m », « p » et « b », j'écris…",pa:"قبل m وp وb أكتب…",o:["m|m","n|n"],a:0,w:"lampe, chambre, emmener : on écrit « m ».|نكتب m."},
+  {t:"q",p:"Quel mot est une exception ?",pa:"أي كلمة هي استثناء؟",o:["lampe|lampe","chambre|chambre","bonbon|bonbon"],a:2,w:"bonbon s'écrit avec « n » devant « b ».|bonbon تُكتب بـ n قبل b."}
+ ]},
+
+{id:"v1",u:3,n:"Vocabulaire · Leçon 1",em:"🔠",fr:"L'ordre alphabétique",ar:"الترتيب الأبجدي",
+ q:["Combien de lettres y a-t-il dans l'alphabet ? Combien de voyelles ?","كم حرفًا في الأبجدية؟ وكم حرف علّة؟"],
+ s:["26 lettres : 6 voyelles et 20 consonnes.","26 حرفًا: 6 حروف علّة و20 حرفًا ساكنًا."],
+ learn:[["L'alphabet est constitué de 26 lettres.","الأبجدية الفرنسية تتكون من 26 حرفًا."],
+        ["6 voyelles : a, e, i, o, u, y. 20 consonnes : b, c, d, f, g, h, j, k, l, m, n, p, q, r, s, t, v, w, x, z.","6 حروف علّة: a, e, i, o, u, y. و20 حرفًا ساكنًا: b, c, d, f, g, h, j, k, l, m, n, p, q, r, s, t, v, w, x, z."],
+        ["L'ordre alphabétique : a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z.","الترتيب الأبجدي: a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z."],
+        ["Dans les dictionnaires, les mots sont classés suivant l'ordre alphabétique.","في القواميس تُرتّب الكلمات حسب الترتيب الأبجدي."]],
+ words:[["Alphabet|الأبجدية"],["Voyelle|حرف علّة"],["Consonne|حرف ساكن"],["Dictionnaire|قاموس"]],
+ ex:[["🅰️","6 voyelles|6 حروف علّة","a e i o u y|a e i o u y","a"],["🔡","20 consonnes|20 حرفًا ساكنًا","b c d f g h j k l m n p q r s t v w x z|…","b"],["📖","Le dictionnaire|القاموس","Mots classés a → z|الكلمات مرتبة من a إلى z","a"]],
+ talk:["Chante l'alphabet de a à z, puis cherche un mot dans un dictionnaire.","ينشد الأبجدية من a إلى z ثم يبحث عن كلمة في قاموس."],
+ xs:[
+  {t:"q",p:"Combien y a-t-il de lettres dans l'alphabet ?",pa:"كم حرفًا في الأبجدية؟",o:["20|20","26|26","6|6"],a:1,w:"6 voyelles + 20 consonnes = 26 lettres.|6 + 20 = 26 حرفًا."},
+  {t:"q",p:"Quelles sont les voyelles ?",pa:"ما هي حروف العلّة؟",o:["a, e, i, o, u, y|a, e, i, o, u, y","b, c, d, f, g, h|b, c, d, f, g, h"],a:0,w:"Il y a 6 voyelles.|يوجد 6 حروف علّة."},
+  {t:"o",p:"Je range les lettres dans l'ordre alphabétique.",pa:"أرتب الحروف ترتيبًا أبجديًا.",o:["a","b","d","e"],w:"a - b - d - e|a - b - d - e"},
+  {t:"o",p:"Je range les lettres dans l'ordre alphabétique.",pa:"أرتب الحروف ترتيبًا أبجديًا.",o:["m","n","o","p"],w:"m - n - o - p|m - n - o - p"},
+  {t:"o",p:"Je range les lettres dans l'ordre alphabétique.",pa:"أرتب الحروف ترتيبًا أبجديًا.",o:["f","j","k","u"],w:"f - j - k - u|f - j - k - u"},
+  {t:"o",p:"Je remets en ordre alphabétique les mots suivants.",pa:"أرتب الكلمات التالية ترتيبًا أبجديًا.",o:["avion","bicyclette","charrette","voiture"],w:"avion, bicyclette, charrette, voiture|avion, bicyclette, charrette, voiture"},
+  {t:"o",p:"Je remets en ordre alphabétique les mots suivants.",pa:"أرتب الكلمات التالية ترتيبًا أبجديًا.",o:["crayon","gomme","stylo","trousse"],w:"crayon, gomme, stylo, trousse|crayon, gomme, stylo, trousse"},
+  {t:"o",p:"Je remets en ordre alphabétique les mots suivants.",pa:"أرتب الكلمات التالية ترتيبًا أبجديًا.",o:["arbre","blanc","cravate","dormir"],w:"arbre, blanc, cravate, dormir|arbre, blanc, cravate, dormir"}
+ ]},
+
+{id:"v2",u:3,n:"Vocabulaire · Leçon 2",em:"🏫",fr:"Lexique thématique de l'école",ar:"معجم المدرسة",
+ q:["Quels sont les lieux représentés dans les deux images ? Quels mots appartiennent à l'école ?","ما الأماكن الظاهرة في الصورتين؟ وما الكلمات التي تنتمي إلى المدرسة؟"],
+ s:["La cour et la classe. Les mots comme maître, cartable, cahier appartiennent à l'école.","الساحة والقسم. كلمات مثل maître وcartable وcahier تنتمي إلى المدرسة."],
+ learn:[["Les lieux : école, cour, classe, CDI, cantine.","الأماكن: المدرسة، الساحة، القسم، مكتبة المدرسة (CDI)، المقصف."],
+        ["Les personnes : maître, maîtresse, élève, directeur, conseiller.","الأشخاص: المعلم، المعلمة، التلميذ، المدير، المستشار."],
+        ["Les matières scolaires : français, mathématiques, grammaire, lecture.","المواد الدراسية: الفرنسية، الرياضيات، القواعد، القراءة."],
+        ["Le mobilier : bureau, table, chaise, placard, pupitre.","الأثاث: المكتب، الطاولة، الكرسي، الخزانة، المنضدة."],
+        ["Les fournitures scolaires : livre, cahier, cartable, trousse, stylo, gomme, crayon.","اللوازم المدرسية: الكتاب، الدفتر، المحفظة، المقلمة، القلم، الممحاة، قلم الرصاص."],
+        ["Les actions : apprendre, lire, colorier, dessiner, écrire, corriger, calculer.","الأفعال: تعلّم، قرأ، لوّن، رسم، كتب، صحّح، حسب."]],
+ words:[["École|مدرسة"],["Cour|ساحة"],["Classe|قسم"],["Cantine|مقصف"],["Maître|معلم"],["Maîtresse|معلمة"],["Élève|تلميذ"],["Directeur|مدير"],["Cartable|محفظة"],["Cahier|دفتر"],["Trousse|مقلمة"],["Stylo|قلم"],["Gomme|ممحاة"],["Crayon|قلم رصاص"]],
+ ex:[["🏫","l'école|المدرسة","Un lieu|مكان","a"],["🍽️","la cantine|المقصف","Un lieu|مكان","a"],["👩‍🏫","la maîtresse|المعلمة","Une personne|شخص","b"],["🧒","l'élève|التلميذ","Une personne|شخص","b"],["🎒","le cartable|المحفظة","Une fourniture|لازمة مدرسية",""],["📓","le cahier|الدفتر","Une fourniture|لازمة مدرسية",""],["🖊️","le stylo|القلم","Une fourniture|لازمة مدرسية",""],["✍️","écrire|يكتب","Une action|فعل","a"]],
+ talk:["Pose-lui des devinettes : « Je sers à effacer. Qui suis-je ? »","يطرح عليه ألغازًا: «أستعمل للمسح، من أنا؟» (la gomme)."],
+ xs:[
+  {t:"q",p:"Je chasse l'intrus : écrire - lire - apprendre - se soigner",pa:"أبحث عن الدخيل: écrire - lire - apprendre - se soigner",o:["écrire|écrire","lire|lire","apprendre|apprendre","se soigner|se soigner"],a:3,w:"On ne se soigne pas à l'école : c'est l'intrus.|لا نتعالج في المدرسة: إنه الدخيل."},
+  {t:"q",p:"Je chasse l'intrus : table - tableau - bureau - matelas",pa:"أبحث عن الدخيل: table - tableau - bureau - matelas",o:["table|table","tableau|tableau","bureau|bureau","matelas|matelas"],a:3,w:"Un matelas est dans la chambre, pas dans la classe.|المرتبة في غرفة النوم لا في القسم."},
+  {t:"q",p:"Je chasse l'intrus : élève - mécanicien - maîtresse - directeur",pa:"أبحث عن الدخيل: élève - mécanicien - maîtresse - directeur",o:["élève|élève","mécanicien|mécanicien","maîtresse|maîtresse","directeur|directeur"],a:1,w:"Le mécanicien travaille dans un garage.|الميكانيكي يعمل في ورشة."},
+  {t:"q",p:"Je chasse l'intrus : cour - cantine - bibliothèque - salon",pa:"أبحث عن الدخيل: cour - cantine - bibliothèque - salon",o:["cour|cour","cantine|cantine","bibliothèque|bibliothèque","salon|salon"],a:3,w:"Le salon est dans la maison.|الصالون في البيت."},
+  {t:"s",p:"Je classe chaque mot dans la bonne famille.",pa:"أصنّف كل كلمة في عائلتها.",c:["Lieu|مكان","Personne|شخص","Mobilier|أثاث","Fourniture|لازمة","Action|فعل"],i:[["la cantine|المقصف",0],["le directeur|المدير",1],["le pupitre|المنضدة",2],["la trousse|المقلمة",3],["dessiner|يرسم",4],["le CDI|مكتبة المدرسة",0]]},
+  {t:"q",p:"Je trouve le nom : « C'est un objet qui sert à tracer des traits droits. »",pa:"أجد الاسم: «شيء يُستعمل لرسم خطوط مستقيمة.»",o:["La règle|المسطرة","La gomme|الممحاة","Le cahier|الدفتر"],a:0,w:"La règle sert à tracer.|المسطرة تُستعمل للرسم المستقيم."},
+  {t:"q",p:"Je trouve le nom : « Elle indique le début et la fin des cours. »",pa:"أجد الاسم: «تدل على بداية الحصص ونهايتها.»",o:["La cloche|الجرس","La cantine|المقصف","La cour|الساحة"],a:0,w:"La cloche sonne au début et à la fin des cours.|الجرس يرنّ في بداية الحصص ونهايتها."},
+  {t:"q",p:"Je trouve le nom : « C'est le chef de l'école. »",pa:"أجد الاسم: «هو رئيس المدرسة.»",o:["Le directeur|المدير","Le maître|المعلم","L'élève|التلميذ"],a:0,w:"Le directeur dirige l'école.|المدير يدير المدرسة."},
+  {t:"q",p:"Je complète : « Le ______ écrit une phrase sur le tableau. »",pa:"أكمل: «Le ______ écrit une phrase sur le tableau.»",o:["maître|المعلم","cartable|المحفظة","cour|الساحة"],a:0,w:"C'est le maître qui écrit au tableau.|المعلم هو من يكتب على السبورة."}
+ ]},
+
+{id:"p1",u:4,n:"Production écrite · Leçon 1",em:"🗂️",fr:"Remplir une fiche de renseignements",ar:"ملء بطاقة معلومات",
+ q:["Sur un document, je vois : Nom, Prénom, Date de naissance, Classe, École… Comment appelle-t-on ce document ?","في ورقة أرى: الاسم العائلي، الاسم الشخصي، تاريخ الازدياد، القسم، المدرسة… ماذا نسمي هذه الورقة؟"],
+ s:["C'est une fiche de renseignements.","إنها بطاقة معلومات (fiche de renseignements)."],
+ learn:[["La fiche de renseignements contient : le nom, le prénom, la date de naissance (ou l'âge), la classe, l'école, l'année scolaire.","بطاقة المعلومات تحتوي على: اللقب، الاسم الشخصي، تاريخ الازدياد (أو العمر)، القسم، المدرسة، السنة الدراسية."],
+        ["On peut ajouter d'autres renseignements : l'adresse, le métier des parents, leur numéro de téléphone…","يمكن إضافة معلومات أخرى: العنوان، مهنة الوالدين، رقم هاتفهما…"],
+        ["J'écris lisiblement, avec une majuscule pour le nom et le prénom.","أكتب بخط واضح، وبحرف كبير في بداية الاسم واللقب."]],
+ words:[["Nom|اللقب (الاسم العائلي)"],["Prénom|الاسم الشخصي"],["Date de naissance|تاريخ الازدياد"],["Classe|القسم"],["Année scolaire|السنة الدراسية"],["Adresse|العنوان"]],
+ ex:[["🪪","Nom : Alami|اللقب: العلمي","Le nom de famille|اسم العائلة","a"],["🙂","Prénom : Yassine|الاسم: ياسين","Le prénom|الاسم الشخصي","a"],["🎂","Naissance : 02/03/2018|الازدياد: 02/03/2018","Jour / mois / année|يوم / شهر / سنة","a"],["🏫","Classe : CE1|القسم: CE1","Ma classe|قسمي","a"],["📅","Année scolaire : 2026/2027|السنة الدراسية","L'année de l'école|سنة الدراسة","a"],["🏠","Adresse|العنوان","Une info en plus|معلومة إضافية","b"]],
+ talk:["Remplis ensemble une fiche avec son nom, son prénom, sa classe et son école.","يملآن معًا بطاقة بالاسم واللقب والقسم والمدرسة."],
+ xs:[
+  {t:"q",p:"Comment appelle-t-on ce document avec le nom, le prénom, la classe, l'école ?",pa:"ماذا نسمي هذه الورقة التي فيها الاسم واللقب والقسم والمدرسة؟",o:["Une fiche de renseignements|بطاقة معلومات","Une recette|وصفة طبخ","Un conte|حكاية"],a:0,w:"Elle donne des informations sur une personne.|تعطي معلومات عن شخص."},
+  {t:"s",p:"Nom de famille ou prénom ?",pa:"اللقب أم الاسم الشخصي؟",c:["Nom|اللقب","Prénom|الاسم الشخصي"],i:[["Lara|لارا",1],["Fontaine|فونتين",0],["Yassine|ياسين",1],["Alami|العلمي",0]]},
+  {t:"s",p:"Cette information est-elle dans la fiche de base, ou peut-on l'ajouter ?",pa:"هل هذه المعلومة من أساس البطاقة أم تُضاف؟",c:["Dans la fiche|في البطاقة","On peut l'ajouter|يمكن إضافتها"],i:[["Le nom|اللقب",0],["La classe|القسم",0],["L'année scolaire|السنة الدراسية",0],["L'adresse|العنوان",1],["Le téléphone des parents|هاتف الوالدين",1],["Le métier des parents|مهنة الوالدين",1]]},
+  {t:"q",p:"Lara veut s'inscrire à la médiathèque. Que doit-elle écrire dans « Date de naissance » ?",pa:"تريد لارا التسجيل في المكتبة. ماذا تكتب في «تاريخ الازدياد»؟",o:["14/05/2018|14/05/2018","CE1|CE1","Fontaine|Fontaine"],a:0,w:"La date de naissance est une date : jour/mois/année.|تاريخ الازدياد تاريخ: يوم/شهر/سنة."}
+ ]},
+
+{id:"p2",u:4,n:"Production écrite · Leçon 2",em:"📖",fr:"Reconstituer un récit",ar:"إعادة تركيب حكاية",
+ q:["Farid arrive à l'école à 8 h 30. Pendant la matinée, il lit un texte. L'après-midi, il visite la bibliothèque. Il revient à la maison à 17 h. Dans quel ordre se passent les actions ?","يصل فريد إلى المدرسة الساعة 8:30. في الصباح يقرأ نصًا. بعد الظهر يزور المكتبة. يرجع إلى البيت الساعة 17:00. بأي ترتيب تحدث الأحداث؟"],
+ s:["Il arrive, il lit, il visite la bibliothèque, puis il rentre.","يصل، يقرأ، يزور المكتبة، ثم يرجع."],
+ learn:[["Pour reconstituer un récit, je relis et je comprends les phrases.","لإعادة تركيب حكاية، أعيد قراءة الجمل وأفهمها."],
+        ["Je cherche les mots ou expressions qui indiquent le temps : le matin, à midi, à 17 heures…","أبحث عن الكلمات التي تدل على الزمن: في الصباح، عند الظهر، الساعة 17…"],
+        ["Je cherche les mots qui indiquent l'ordre : d'abord, ensuite, puis, enfin…","أبحث عن الكلمات التي تدل على الترتيب: أولًا، بعد ذلك، ثم، وأخيرًا…"],
+        ["Je cherche l'ordre convenable des actions racontées.","أبحث عن الترتيب المناسب للأحداث المحكية."]],
+ words:[["D'abord|أولًا"],["Ensuite|بعد ذلك"],["Puis|ثم"],["Enfin|أخيرًا"],["Récit|حكاية"]],
+ ex:[["1️⃣","D'abord|أولًا","Le début|البداية","a"],["2️⃣","Ensuite|بعد ذلك","La suite|ما بعد","a"],["3️⃣","Puis|ثم","Encore après|ثم بعد ذلك","a"],["🏁","Enfin|أخيرًا","La fin|النهاية","b"]],
+ talk:["Raconte ta matinée en utilisant : d'abord, ensuite, puis, enfin.","يحكي صباحه مستعملًا: d'abord, ensuite, puis, enfin."],
+ xs:[
+  {t:"o",p:"Je remets les phrases dans l'ordre pour raconter la matinée de Laura.",pa:"أرتب الجمل لأحكي صباح لورا.",o:["Laura se lève à 7 heures du matin.","Elle fait sa toilette et prend son petit déjeuner.","Ensuite, elle se change et prépare son cartable.","À 7 heures 45, elle part pour l'école."],w:"C'est l'ordre de la matinée de Laura.|هذا هو ترتيب صباح لورا."},
+  {t:"o",p:"Je remets les phrases dans l'ordre pour raconter la journée de Farid.",pa:"أرتب الجمل لأحكي يوم فريد.",o:["Farid arrive à l'école à 8 heures et demie.","Pendant la matinée, il lit un texte.","L'après-midi, il visite la bibliothèque.","Il revient à la maison à 17 heures."],w:"Du matin jusqu'au soir.|من الصباح إلى المساء."},
+  {t:"s",p:"Ce mot indique-t-il le temps ou l'ordre ?",pa:"هل تدل هذه الكلمة على الزمن أم على الترتيب؟",c:["Le temps|الزمن","L'ordre|الترتيب"],i:[["à huit heures et demie|الثامنة والنصف",0],["d'abord|أولًا",1],["le matin|في الصباح",0],["ensuite|بعد ذلك",1],["à 17 heures|الساعة 17",0],["enfin|أخيرًا",1]]},
+  {t:"q",p:"Quel mot indique la fin d'un récit ?",pa:"أي كلمة تدل على نهاية الحكاية؟",o:["Enfin|أخيرًا","D'abord|أولًا","Ensuite|بعد ذلك"],a:0,w:"« Enfin » termine le récit.|«Enfin» تنهي الحكاية."}
+ ]}
+];
+const UNITS=[
+ {u:0,t:"Grammaire",ar:"قواعد اللغة"},
+ {u:1,t:"Conjugaison",ar:"تصريف الأفعال"},
+ {u:2,t:"Orthographe",ar:"الإملاء"},
+ {u:3,t:"Vocabulaire",ar:"المفردات"},
+ {u:4,t:"Production écrite",ar:"التعبير الكتابي"}
+];
+
+/* ---------- progression ---------- */
+const getP=()=>store.get();
+function saveScore(id,score,total){const p=getP();const best=p[id]||{s:0,t:total};if(score>=best.s)p[id]={s:score,t:total};store.set(p)}
+const starsOf=r=>!r?0:(r.s/r.t>=.9?3:r.s/r.t>=.6?2:1);
+const starEl=n=>h('div',{class:'stars','aria-label':n+' étoiles sur 3'},[1,2,3].map(i=>h('span',{class:i<=n?'':'off'},'★')));
+
+/* ---------- figure du corps ---------- */
+const JP={cou:[[100,64]],epaule:[[72,86],[128,86]],coude:[[48,134],[152,134]],poignet:[[34,180],[166,180]],hanche:[[84,182],[116,182]],genou:[[76,246],[124,246]],cheville:[[72,304],[128,304]]};
+function figure(onPick){
+  const L=[[100,62,100,176],[72,86,128,86],[84,182,116,182],[72,86,48,134],[48,134,34,180],[128,86,152,134],[152,134,166,180],[84,182,76,246],[76,246,72,304],[116,182,124,246],[124,246,128,304],[72,304,58,312],[128,304,142,312]];
+  const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 200 330');svg.setAttribute('class','fig');svg.setAttribute('role','group');svg.setAttribute('aria-label','Corps humain avec les articulations');
+  const hd=document.createElementNS(ns,'circle');hd.setAttribute('class','head');hd.setAttribute('cx',100);hd.setAttribute('cy',30);hd.setAttribute('r',20);svg.append(hd);
+  L.forEach(a=>{const l=document.createElementNS(ns,'line');['x1','y1','x2','y2'].forEach((k,i)=>l.setAttribute(k,a[i]));svg.append(l)});
+  const dots=[];
+  for(const k in JP)JP[k].forEach(([x,y])=>{const c=document.createElementNS(ns,'circle');c.setAttribute('class','j');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',9);c.setAttribute('tabindex','0');c.setAttribute('role','button');c.setAttribute('aria-label',J[k][0]);c.dataset.k=k;
+    const fire=()=>onPick(k,c);c.addEventListener('click',fire);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fire()}});svg.append(c);dots.push(c)});
+  return {svg,dots};
+}
+
+/* ---------- exercices ---------- */
+function qEx(ex,cb){
+  let tries=0,done=false;const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});const box=h('div',{class:'opts'});
+  ex.o.forEach((o,i)=>{const b=h('button',{type:'button',class:'opt'},biS(o));b.addEventListener('click',()=>{
+    if(done||b.disabled)return;
+    if(i===ex.a){done=true;b.classList.add('ok');fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo ! '+(ex.w?sp(ex.w)[0]:''),'أحسنت! '+(ex.w?sp(ex.w)[1]:''))));cb(tries?0:1)}
+    else{tries++;b.classList.add('bad');b.disabled=true;fb.replaceChildren(h('div',{class:'m bad'},bi('Pas tout à fait. Essaie encore !','ليس تمامًا، حاول مرة أخرى!')))}
+  });box.append(b)});
+  return [bi(ex.p,ex.pa,'p'),box,fb];
+}
+function sEx(ex,cb){
+  const n=ex.i.length;let left=n,first=0;const rows=h('div');
+  ex.i.forEach(([lab,ci])=>{
+    let wrong=false,fin=false;const row=h('div',{class:'row'});const [f,a]=sp(lab);
+    const em=/^\p{Extended_Pictographic}/u.test(f)?f.match(/^(\p{Extended_Pictographic}️?)\s*/u):null;
+    const left_=h('div',{class:'lab'},em?h('span',{class:'e'},em[1]):null,bi(em?f.slice(em[0].length):f,a));
+    const opts=h('div',{class:'opts'});
+    ex.c.forEach((c,k)=>{const b=h('button',{type:'button',class:'opt'},biS(c));b.addEventListener('click',()=>{
+      if(fin||b.disabled)return;
+      if(k===ci){fin=true;b.classList.add('ok');row.classList.add('done');[...opts.children].forEach(x=>{if(x!==b)x.disabled=true});if(!wrong)first++;if(--left===0)cb(first/n)}
+      else{wrong=true;b.classList.add('bad');b.disabled=true}
+    });opts.append(b)});
+    row.append(left_,opts);rows.append(row);
+  });
+  return [bi(ex.p,ex.pa,'p'),rows];
+}
+function fEx(ex,cb){
+  let i=0,first=0,wrong=false;const prompt=h('div',{class:'p'});const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  const show=()=>{const [f,a]=J[ex.g[i]];prompt.replaceChildren(bi('Touche : '+f.toLowerCase(),'المس: '+a))};show();
+  const fig=figure((k,c)=>{
+    if(i>=ex.g.length)return;
+    if(k===ex.g[i]){if(!wrong)first++;wrong=false;fig.dots.filter(d=>d.dataset.k===k).forEach(d=>d.classList.add('ok'));i++;
+      if(i>=ex.g.length){prompt.replaceChildren(bi('Bravo, tu connais tes articulations !','أحسنت! أنت تعرف مفاصلك!'));fb.replaceChildren();cb(first/ex.g.length)}
+      else{fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo !','أحسنت!')));show()}}
+    else{wrong=true;c.classList.add('on');setTimeout(()=>c.classList.remove('on'),500);fb.replaceChildren(h('div',{class:'m bad'},bi('Ce n\'est pas celle-là. Essaie encore !','ليس هذا المفصل، حاول مرة أخرى!')))}
+  });
+  return [bi(ex.p,ex.pa,'p'),prompt,h('div',{style:'max-width:240px;margin:0 auto;width:100%'},fig.svg),fb];
+}
+
+function oEx(ex,cb){
+  const n=ex.o.length;let k=0,wrong=false;
+  const line=h('div',{class:'opts',style:'min-height:56px;border:2px dashed var(--line);border-radius:14px;padding:8px'});
+  const pool=h('div',{class:'opts'});const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  let order=ex.o.map((v,i)=>i);
+  let guard=0;do{order=order.sort(()=>Math.random()-.5)}while(n>1&&order.every((v,i)=>v===i)&&++guard<20);
+  order.forEach(i=>{const b=h('button',{type:'button',class:'opt'},biS(ex.o[i]));b.addEventListener('click',()=>{
+    if(b.disabled)return;
+    if(i===k){k++;b.disabled=true;b.hidden=true;line.append(h('span',{class:'opt ok',style:'cursor:default'},biS(ex.o[i])));fb.replaceChildren();
+      if(k===n){fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo !','أحسنت!')));cb(wrong?0:1)}}
+    else{wrong=true;fb.replaceChildren(h('div',{class:'m bad'},bi("Ce n'est pas le bon ordre. Essaie encore !",'ليس الترتيب الصحيح، حاول مرة أخرى!')))}
+  });pool.append(b)});
+  return [bi(ex.p,ex.pa,'p'),h('div',{class:'k'},'Ma réponse · إجابتي'),line,h('div',{class:'k'},'À ranger · للترتيب'),pool,fb];
+}
+
+/* ---------- vues ---------- */
+const app=document.getElementById('app');
+const sec=(fr,ar,...kids)=>h('section',{class:'sec'},h('h2',null,h('span',null,fr),h('span',{class:'ar',lang:'ar',dir:'rtl'},ar)),...kids);
+const setAcc=(el,u)=>{const c=['u0','u1','u2'][u%3];el.style.setProperty('--acc','var(--'+c+')');el.style.setProperty('--accbg','var(--'+c+'bg)')};
+
+function home(){
+  const p=getP();const total=LESSONS.length;const doneN=LESSONS.filter(l=>p[l.id]).length;
+  const root=h('div',null,
+   h('div',{class:'hero'},h('h1',null,'Français CE1'),bi('Grammaire, conjugaison, orthographe, vocabulaire et production écrite.','القواعد والتصريف والإملاء والمفردات والتعبير الكتابي.'),
+     h('div',{class:'meter',role:'progressbar','aria-valuemin':0,'aria-valuemax':total,'aria-valuenow':doneN,'aria-label':'Leçons terminées'},h('b',{style:'width:'+(doneN/total*100)+'%'})),
+     h('div',{class:'sub'},doneN+' leçon'+(doneN>1?'s':'')+' sur '+total+' terminée'+(doneN>1?'s':''))));
+  UNITS.forEach(U=>{
+    const s=h('section',{class:'unit'});setAcc(s,U.u);
+    s.append(h('h2',null,h('span',null,U.t),h('span',{class:'ar',lang:'ar',dir:'rtl'},U.ar)));
+    const g=h('div',{class:'grid'});
+    LESSONS.filter(l=>l.u===U.u).forEach(l=>g.append(h('a',{class:'card',href:'#'+l.id},
+      h('span',{class:'em','aria-hidden':'true'},l.em),h('span',{class:'n'},l.n),h('h3',null,l.fr),h('span',{class:'ar',lang:'ar',dir:'rtl'},l.ar),starEl(starsOf(p[l.id])))));
+    s.append(g);root.append(s);
+  });
+  const d=getP().defi;
+  root.append(h('a',{class:'defi',href:'#defi'},h('span',{style:'font-size:2.4rem'},'🏆'),h('div',null,h('h2',null,'Défi final'),h('span',{class:'ar',lang:'ar',dir:'rtl'},'التحدي النهائي: 10 أسئلة من كل الدروس'),h('div',null,'10 questions mélangées de toutes les leçons.'),d?starEl(starsOf(d)):null),h('span',{class:'go'},'Jouer')));
+  return root;
+}
+
+function lesson(l,idx){
+  const root=h('div',{class:'lesson'});setAcc(root,l.u);
+  root.append(h('a',{class:'back',href:'#home'},'← Toutes les leçons'));
+  root.append(h('div',{class:'lh'},h('span',{class:'em','aria-hidden':'true'},l.em),h('div',null,h('div',{class:'n'},l.n),h('h1',null,l.fr),h('div',{class:'ar',lang:'ar',dir:'rtl'},l.ar))));
+  // découvrir
+  root.append(sec('Je découvre','أكتشف',h('div',{class:'tabs2'},
+    h('div',{class:'box'},h('div',{class:'lab'},h('span',null,'Je réfléchis'),h('span',{class:'ar'},'أتأمل')),bi(l.q[0],l.q[1])),
+    h('div',{class:'box'},h('div',{class:'lab'},h('span',null,'Je pense'),h('span',{class:'ar'},'أظن')),bi(l.s[0],l.s[1])))));
+  // retenir
+  const learn=h('div',{class:'learn'});
+  l.learn.forEach(([f,a])=>{const sp_=h('button',{type:'button',class:'pill','aria-label':'Écouter',style:'align-self:start;margin-top:6px'},'🔊 Écouter');sp_.addEventListener('click',()=>speak(f.replace(/[①②③④]/g,''),'fr-FR'));learn.append(h('div',{class:'box'},bi(f,a),sp_))});
+  root.append(sec('Je retiens','أتعلّم',learn));
+  // figure
+  if(l.fig){
+    const cap=h('div',{class:'cap'},bi('Touche un point rouge pour voir le nom de l\'articulation.','المس نقطة لترى اسم المفصل.'));
+    const fg=figure((k,c)=>{fg.dots.forEach(d=>d.classList.toggle('on',d.dataset.k===k));const [f,a]=J[k];cap.replaceChildren(h('div',{style:'font-family:var(--fd);font-size:1.5rem;font-weight:800'},f),h('div',{class:'ar',style:'font-size:1.3rem'},a));speak(f,'fr-FR')});
+    root.append(sec('Mon corps et mes articulations','جسمي ومفاصلي',h('div',{class:'box figbox'},h('div',null,fg.svg),cap)));
+  }
+  // mots
+  root.append(sec('Mots clés','كلمات مفتاحية',h('div',{class:'words'},l.words.map(([w])=>{const [f,a]=sp(w);const b=h('button',{type:'button',class:'word','aria-label':'Écouter '+f},h('span',{class:'sp','aria-hidden':'true'},'🔊'),bi(f,a));b.addEventListener('click',()=>speak(f,'fr-FR'));return b}))));
+  // exemples
+  const exg=h('div',{class:'exs'});
+  l.ex.forEach(([e,t,tag,k])=>{const [f,a]=sp(t);const tg=tag?sp(tag):null;exg.append(h('div',{class:'ex'},h('span',{class:'e','aria-hidden':'true'},e),h('div',{class:'t'},f),h('span',{class:'ar',lang:'ar',dir:'rtl'},a),tg?h('span',{class:'chip '+(k||'')},tg[0]+' · '+tg[1]):null))});
+  root.append(sec('Exemples','أمثلة',exg));
+  if(l.ex2){const g2=h('div',{class:'exs'});l.ex2.forEach(([e,t,tag,k])=>{const [f,a]=sp(t);const tg=sp(tag);g2.append(h('div',{class:'ex'},h('span',{class:'e'},e),h('div',{class:'t'},f),h('span',{class:'ar',lang:'ar',dir:'rtl'},a),h('span',{class:'chip '+(k||'')},tg[0]+' · '+tg[1])))});root.append(sec(l.ex2title[0],l.ex2title[1],g2))}
+  if(l.warn)root.append(h('div',{class:'note warn',style:'margin-top:18px'},h('div',{class:'lab'},'⚠️ Sécurité'),bi(l.warn[0],l.warn[1])));
+  if(l.fact)root.append(h('div',{class:'note fact',style:'margin-top:18px'},h('div',{class:'lab'},'Sais-tu que ? · هل تعلم؟'),bi(l.fact[0],l.fact[1])));
+  root.append(h('div',{class:'note',style:'margin-top:18px'},h('div',{class:'lab'},'Parlons-en · تحدّث معه'),bi(l.talk[0],l.talk[1])));
+  root.append(exercises(l.xs,l.id,idx));
+  return root;
+}
+
+function exercises(xs,id,idx,title){
+  const wrap=h('section',{class:'sec'});wrap.append(h('h2',null,h('span',null,'Je m\'entraîne'),h('span',{class:'ar',lang:'ar',dir:'rtl'},'أتدرّب')));
+  const res=[];const out=h('div');let n=0;
+  xs.forEach((ex,i)=>{
+    const card=h('div',{class:'xc'});card.append(h('div',{class:'k'},'Exercice '+(i+1)+' sur '+xs.length));
+    const f=ex.t==='q'?qEx:ex.t==='s'?sEx:ex.t==='o'?oEx:fEx;
+    const parts=f(ex,sc=>{res[i]=sc;card.classList.add('fin');if(res.filter(x=>x!==undefined).length===xs.length)finish()});
+    card.append(...parts);out.append(card);
+  });
+  const resultBox=h('div');
+  function finish(){
+    const score=res.reduce((a,b)=>a+b,0);const total=xs.length;
+    if(id==='defi'){const p=getP();const old=p.defi;if(!old||score>=old.s)p.defi={s:score,t:total};store.set(p)}else saveScore(id,score,total);
+    const st=starsOf({s:score,t:total});
+    const next=(typeof idx==='number'&&LESSONS[idx+1])?LESSONS[idx+1]:null;
+    const msg=st===3?['Super champion !','أنت بطل رائع!']:st===2?['Très bien !','أحسنت جدًا!']:['Bien joué, recommence pour avoir plus d\'étoiles !','أحسنت، أعد المحاولة لتحصل على نجوم أكثر!'];
+    resultBox.replaceChildren(h('div',{class:'result'},h('div',{class:'big','aria-label':st+' étoiles'},'★'.repeat(st)+'☆'.repeat(3-st)),h('h2',null,msg[0]),h('div',{class:'ar'},msg[1]),h('div',null,Math.round(score*10)/10+' / '+total),
+      h('div',{class:'btns'},h('button',{type:'button',class:'btn alt',onclick:()=>route(true)},'Recommencer · إعادة'),next?h('a',{class:'btn',href:'#'+next.id},'Leçon suivante →'):null,h('a',{class:'btn alt',href:'#home'},'Accueil'))));
+    resultBox.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  wrap.append(out,resultBox);return wrap;
+}
+
+function defi(){
+  const pool=[];LESSONS.forEach(l=>l.xs.forEach(x=>{if(x.t==='q')pool.push(x);else if(x.t==='s')x.i.forEach(it=>pool.push({t:'q',p:x.p,pa:x.pa,o:x.c.slice(),a:it[1],w:'',_label:it[0]}))}));
+  const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const pick=shuffle(pool).slice(0,10).map(x=>{if(!x._label)return x;const [f,a]=sp(x._label);const clean=s=>s.replace(/^\p{Extended_Pictographic}️?\s*/u,'');return Object.assign({},x,{p:x.p+' « '+clean(f)+' »',pa:a?x.pa+' «'+a+'»':x.pa,_label:null})});
+  const root=h('div',{class:'lesson'});setAcc(root,1);
+  root.append(h('a',{class:'back',href:'#home'},'← Toutes les leçons'));
+  root.append(h('div',{class:'lh'},h('span',{class:'em'},'🏆'),h('div',null,h('div',{class:'n'},'Toutes les leçons'),h('h1',null,'Défi final'),h('div',{class:'ar'},'التحدي النهائي: 10 أسئلة مختلطة'))));
+  root.append(exercises(pick,'defi',null));return root;
+}
+
+/* ---------- routage ---------- */
+function route(force){
+  const id=(location.hash||'#home').slice(1);
+  let v;
+  if(id==='defi')v=defi();
+  else{const i=LESSONS.findIndex(l=>l.id===id);v=i>=0?lesson(LESSONS[i],i):home()}
+  app.replaceChildren(v);
+  if(!force)window.scrollTo(0,0);else window.scrollTo(0,0);
+}
+addEventListener('hashchange',()=>route());
+const arBtn=document.getElementById('arBtn');
+let arOn=true;try{arOn=localStorage.getItem('francais-ar')!=='0'}catch(e){}
+function applyAr(){document.body.classList.toggle('noar',!arOn);arBtn.setAttribute('aria-pressed',String(arOn))}
+arBtn.addEventListener('click',()=>{arOn=!arOn;try{localStorage.setItem('francais-ar',arOn?'1':'0')}catch(e){}applyAr()});
+applyAr();route();
+</script>

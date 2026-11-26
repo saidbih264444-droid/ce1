@@ -44,7 +44,7 @@ a:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 section{margin-top:34px}
 h2{font-size:1.45rem;margin-bottom:12px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
 h2 .ar{font-size:1.1rem;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
 .card{display:flex;flex-direction:column;gap:4px;text-decoration:none;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px;min-width:0;transition:transform .15s,border-color .15s}
 .card:hover{transform:translateY(-2px)}
 .card .em{font-size:2.2rem;line-height:1}
@@ -52,7 +52,7 @@ h2 .ar{font-size:1.1rem;font-weight:700}
 .card .go{margin-top:auto;padding-top:10px;font-weight:800;font-size:.95rem}
 .card.g{border-color:var(--g)}.card.g .go{color:var(--g)}
 .card.b{border-color:var(--b)}.card.b .go{color:var(--b)}
-.card.p{border-color:var(--p)}.card.p .go{color:var(--p)}
+.card.m{border-color:var(--sun)}.card.m .go{color:var(--ink)}.card.p{border-color:var(--p)}.card.p .go{color:var(--p)}
 .steps{display:grid;gap:12px;counter-reset:s;padding:0;margin:0;list-style:none}
 .steps li{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px;counter-increment:s}
 .steps li::before{content:counter(s);font-family:var(--fd);font-weight:800;font-size:1.3rem;width:40px;height:40px;border-radius:50%;background:var(--sun);color:#15303D;display:grid;place-items:center}
@@ -88,6 +88,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);color:v
       <div class="grid">
         <a class="card g" href="sciences.html"><span class="em" aria-hidden="true">🔬</span><h3>Sciences</h3><span class="ar" lang="ar" dir="rtl">العلوم</span><span class="note">Les sens, le corps, l'alimentation, les dents.</span><span class="go">Ouvrir →</span></a>
         <a class="card b" href="francais.html"><span class="em" aria-hidden="true">📘</span><h3>Français</h3><span class="ar" lang="ar" dir="rtl">اللغة الفرنسية</span><span class="note">Grammaire, conjugaison, orthographe, vocabulaire.</span><span class="go">Ouvrir →</span></a>
+        <a class="card m" href="maths.html"><span class="em" aria-hidden="true">➗</span><h3>Mathématiques</h3><span class="ar" lang="ar" dir="rtl">الرياضيات</span><span class="note">Nombres, addition, soustraction, multiplication, formes, dirham, heure.</span><span class="go">Ouvrir →</span></a>
         <a class="card p" href="examen.html"><span class="em" aria-hidden="true">📝</span><h3>Examen de sciences</h3><span class="ar" lang="ar" dir="rtl">امتحان العلوم</span><span class="note">Examen blanc : la correction et la note à la fin.</span><span class="go">Passer l'examen →</span></a>
       </div>
     </section>

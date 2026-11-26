@@ -1,0 +1,530 @@
+<title>Mathématiques CE1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Cairo:wght@500;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: carnet d'école. Accueil en grille de séances par unité, leçon en une colonne qui défile, exercices en cartes. */
+:root{
+  --bg:#EEF5F9;--surface:#FFFFFF;--ink:#15303D;--muted:#5B7280;--line:#D3E2EA;
+  --u0:#2C78D2;--u0bg:#DEEAFA;--u1:#1E9E6A;--u1bg:#DDF3E9;--u2:#D63F7E;--u2bg:#FBE1EC;
+  --ok:#1E9E6A;--okbg:#DDF3E9;--bad:#D6453D;--badbg:#FBE4E2;--sun:#F4B72E;--ar:#0F5C7A;
+  --fd:'Baloo 2','Trebuchet MS',system-ui,sans-serif;--fb:'Nunito',system-ui,'Segoe UI',sans-serif;--fa:'Cairo','Noto Naskh Arabic','Segoe UI',Tahoma,sans-serif;
+  --acc:var(--u0);--accbg:var(--u0bg);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1C24;--surface:#182933;--ink:#E6F0F5;--muted:#9FB5C2;--line:#2A404D;
+  --u0:#6AA8F0;--u0bg:#1B3050;--u1:#46C592;--u1bg:#17372C;--u2:#F0689D;--u2bg:#3D1F2C;
+  --ok:#46C592;--okbg:#17372C;--bad:#F0766E;--badbg:#3F2220;--sun:#F4C45A;--ar:#8FD3F0;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1C24;--surface:#182933;--ink:#E6F0F5;--muted:#9FB5C2;--line:#2A404D;
+  --u0:#6AA8F0;--u0bg:#1B3050;--u1:#46C592;--u1bg:#17372C;--u2:#F0689D;--u2bg:#3D1F2C;
+  --ok:#46C592;--okbg:#17372C;--bad:#F0766E;--badbg:#3F2220;--sun:#F4C45A;--ar:#8FD3F0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:500 18px/1.5 var(--fb);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:860px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,circle:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.ar{font-family:var(--fa);color:var(--ar);direction:rtl;text-align:right;font-weight:500;line-height:1.7}
+.bi{display:flex;flex-direction:column;gap:0;min-width:0}
+body.noar .ar{display:none}
+h1,h2,h3{font-family:var(--fd);line-height:1.15;margin:0;text-wrap:balance}
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.brand{font-family:var(--fd);font-weight:800;font-size:1.3rem;color:var(--ink);text-decoration:none;margin-inline-end:auto;display:flex;align-items:center;gap:8px}
+.brand i{font-style:normal;background:var(--u1);color:#fff;border-radius:10px;padding:0 9px;font-size:1rem}
+.pill{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 14px;min-height:40px;font-weight:800;font-size:.9rem}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* home */
+.hero{padding:24px 0 8px;display:grid;gap:6px}
+.hero h1{font-size:clamp(2rem,7vw,3rem)}
+.hero .sub{color:var(--muted)}
+.meter{height:12px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:12px}
+.meter b{display:block;height:100%;background:var(--u1);border-radius:99px;transition:width .5s}
+.unit{margin-top:30px}
+.unit h2{font-size:1.35rem;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.unit h2 span.tag{font-size:.8rem;font-family:var(--fb);font-weight:800;background:var(--accbg);color:var(--acc);padding:2px 10px;border-radius:8px;letter-spacing:.04em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px}
+.card{display:flex;flex-direction:column;gap:6px;text-align:start;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px;text-decoration:none;color:inherit;min-width:0;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--acc)}
+.card .em{font-size:2rem;line-height:1}
+.card .n{font-size:.78rem;font-weight:800;color:var(--acc);letter-spacing:.05em;text-transform:uppercase}
+.card h3{font-size:1.1rem}
+.stars{font-size:1.05rem;letter-spacing:2px;color:var(--sun);margin-top:auto}
+.stars .off{color:var(--line)}
+.soon{border-style:dashed;opacity:.75}
+.defi{margin-top:30px;background:var(--ink);color:var(--bg);border-radius:20px;padding:20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;text-decoration:none}
+.defi h2{font-size:1.5rem}.defi .ar{color:var(--sun)}
+.defi .go{margin-inline-start:auto;background:var(--sun);color:#15303D;border-radius:12px;padding:10px 18px;font-weight:800}
+/* lesson */
+.lesson{--pad:18px}
+.back{display:inline-flex;margin:16px 0 4px;color:var(--muted);font-weight:800;text-decoration:none;min-height:40px;align-items:center}
+.lh{background:var(--accbg);border-radius:22px;padding:20px;display:flex;gap:16px;align-items:center}
+.lh .em{font-size:3.2rem;line-height:1}
+.lh .n{font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
+.lh h1{font-size:clamp(1.5rem,5.5vw,2.1rem);margin:2px 0}
+.sec{margin-top:28px}
+.sec>h2{font-size:1.4rem;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:10px}
+.sec>h2 .ar{font-size:1.15rem;font-weight:700}
+.tabs2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px;min-width:0}
+.box .lab{font-weight:800;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:var(--acc);display:flex;justify-content:space-between;gap:8px}
+.learn{display:grid;gap:10px}
+.learn .box{border-inline-start:6px solid var(--acc)}
+.words{display:flex;flex-wrap:wrap;gap:10px}
+.word{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:8px 14px;min-height:56px}
+.word:hover{border-color:var(--acc)}
+.word .sp{font-size:1.1rem}
+.exs{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.ex{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:2px;justify-items:start;min-width:0}
+.ex .e{font-size:2rem;line-height:1.1}
+.ex .t{font-weight:800;margin-top:4px;overflow-wrap:anywhere}
+.chip{display:inline-block;margin-top:6px;font-size:.8rem;font-weight:800;background:var(--accbg);color:var(--acc);border-radius:8px;padding:1px 10px}
+.chip.a{background:var(--okbg);color:var(--ok)}.chip.b{background:var(--badbg);color:var(--bad)}
+.note{border-radius:16px;padding:14px 16px;background:var(--surface);border:2px dashed var(--line);display:grid;gap:2px}
+.note .lab{font-family:var(--fd);font-weight:800;font-size:1.1rem}
+.note.warn{border-color:var(--bad)}.note.fact{border-color:var(--sun)}
+.figbox{display:grid;grid-template-columns:minmax(140px,220px) 1fr;gap:16px;align-items:center}
+.figbox svg{width:100%;height:auto;max-height:380px}
+.figbox .cap{min-height:3.6em}
+.fig line,.fig circle.head{stroke:var(--ink);stroke-width:5;stroke-linecap:round;fill:none}
+.fig .j{fill:var(--acc);stroke:var(--surface);stroke-width:3;cursor:pointer;transition:r .12s}
+.fig .j:hover{r:12}
+.fig .j.on{fill:var(--sun)}
+.fig .j.ok{fill:var(--ok)}
+/* exercises */
+.xc{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:12px;margin-bottom:14px}
+.xc.fin{border-color:var(--ok)}
+.xc .k{font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.xc .p{font-weight:800;font-size:1.1rem}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opt{background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:8px 16px;min-height:52px;text-align:start;min-width:0}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad);opacity:.7}
+.opt:disabled{cursor:default}
+.fb{min-height:0}
+.fb .m{border-radius:12px;padding:10px 14px}
+.fb .m.ok{background:var(--okbg);color:var(--ink)}
+.fb .m.bad{background:var(--badbg);color:var(--ink)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row.done{opacity:.95}
+.row .lab{display:flex;gap:10px;align-items:center;min-width:0}
+.row .lab .e{font-size:1.7rem}
+.row .opts{justify-content:flex-end;gap:8px}
+.row .opt{min-height:44px;padding:4px 12px;font-size:.95rem}
+@media (max-width:560px){.row{grid-template-columns:1fr}.row .opts{justify-content:flex-start}.tabs2,.figbox{grid-template-columns:1fr}}
+.result{text-align:center;display:grid;gap:8px;justify-items:center;background:var(--accbg);border-radius:22px;padding:24px 16px}
+.result .big{font-size:2.6rem;letter-spacing:6px;color:var(--sun)}
+.result h2{font-size:1.7rem}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:800;text-decoration:none;min-height:48px;display:inline-flex;align-items:center}
+.btn.alt{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="#home"><i>CE1</i> Mathématiques</a>
+    <button class="pill" id="arBtn" type="button" aria-pressed="true">عربي</button>
+  </div>
+  <main id="app"></main>
+</div>
+
+<script>
+"use strict";
+/* ---------- helpers ---------- */
+const h=(tag,props,...kids)=>{const e=document.createElement(tag);for(const k in props||{}){const v=props[k];if(k==='class')e.className=v;else if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else e.setAttribute(k,v);}kids.flat(9).forEach(c=>{if(c==null||c===false)return;e.append(c.nodeType?c:document.createTextNode(c));});return e;};
+const sp=s=>s.split('|');
+const bi=(fr,ar,cls)=>h('div',{class:'bi '+(cls||'')},h('span',{class:'fr'},fr),ar?h('span',{class:'ar',lang:'ar',dir:'rtl'},ar):null);
+const biS=s=>{const [f,a]=sp(s);return bi(f,a)};
+const store={get(){try{return JSON.parse(localStorage.getItem('maths-ce1')||'{}')}catch(e){return{}}},set(o){try{localStorage.setItem('maths-ce1',JSON.stringify(o))}catch(e){}}};
+const speak=(t,l)=>{try{const u=new SpeechSynthesisUtterance(t);u.lang=l||'fr-FR';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}};
+const vf=(p,pa,truth,w)=>({t:'q',p,pa,o:['Vrai|صحيح','Faux|خطأ'],a:truth?0:1,w});
+const J={cou:['Le cou','العنق'],epaule:["L'épaule",'الكتف'],coude:['Le coude','المرفق'],poignet:['Le poignet','المعصم'],hanche:['La hanche','الورك'],genou:['Le genou','الركبة'],cheville:['La cheville','الكاحل']};
+const SENS5=['La vue|البصر','L\'ouïe|السمع','L\'odorat|الشم','Le goût|الذوق','Le toucher|اللمس'];
+
+/* ---------- contenu de mathématiques CE1 ---------- */
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const mcq=(p,pa,ans,wr,w)=>{ans=String(ans);const wrong=[...new Set(wr.map(String))].filter(x=>x!==ans&&!(Number(x)<0)).slice(0,3);const o=sh([ans,...wrong]);return {t:"q",p,pa,o,a:o.indexOf(ans),w:w||""}};
+const add=(a,b)=>{const s=a+b;const c=a%10+b%10>=10;return mcq(`${a} + ${b} = ?`,"أحسب الناتج.",s,c?[s-10,s+1,s-1,s+10]:[s+10,s+1,s-1,s-10],`${a} + ${b} = ${s}.|الجواب الصحيح: ${s}`)};
+const sub=(a,b)=>{const s=a-b;const bo=a%10<b%10;const err=(Math.floor(a/10)-Math.floor(b/10))*10+Math.abs(a%10-b%10);return mcq(`${a} − ${b} = ?`,"أحسب الناتج.",s,bo?[err,s+10,s-1,s+1]:[s+10,s+1,s-1,s-10],`${a} − ${b} = ${s}.|الجواب الصحيح: ${s}`)};
+const mul=(a,b)=>{const s=a*b;return mcq(`${a} × ${b} = ?`,"أحسب الناتج.",s,[a+b,s+b,s-a,s+a],`${a} × ${b} = ${s}.|الجواب الصحيح: ${s}`)};
+const dbl=n=>mcq(`Quel est le double de ${n} ?`,`ما ضعف العدد ${n}؟`,n*2,[n+2,n*2+2,n*2-2,n*3],`Le double de ${n} est ${n*2} : ${n} + ${n}.|ضعف ${n} هو ${n*2}`);
+const moi=n=>mcq(`Quelle est la moitié de ${n} ?`,`ما نصف العدد ${n}؟`,n/2,[n/2+1,n/2-1,n*2,n-2],`La moitié de ${n} est ${n/2}.|نصف ${n} هو ${n/2}`);
+const CMP=["Plus grand ( > )|أكبر من","Plus petit ( < )|أصغر من","Égal ( = )|يساوي"];
+
+const LESSONS=[
+{id:"n1",u:0,n:"Les nombres · Leçon 1",em:"🔢",fr:"Les nombres jusqu'à 100",ar:"الأعداد إلى 100",
+ q:["Dans le nombre 47, que représente le 4 ? Et le 7 ?","في العدد 47، ماذا يمثل الرقم 4؟ وماذا يمثل الرقم 7؟"],
+ s:["Le 4 représente les dizaines. Le 7 représente les unités.","الرقم 4 يمثل العشرات والرقم 7 يمثل الوحدات."],
+ learn:[["Je peux écrire tous les nombres avec 10 chiffres : 0, 1, 2, 3, 4, 5, 6, 7, 8, 9.","يمكنني كتابة كل الأعداد بعشرة أرقام: 0، 1، 2، 3، 4، 5، 6، 7، 8، 9."],
+        ["Un nombre à deux chiffres a des dizaines et des unités. Exemple : 47 = 4 dizaines + 7 unités, c'est 40 + 7.","العدد المكوّن من رقمين له عشرات ووحدات. مثال: 47 = 4 عشرات + 7 وحدات، أي 40 + 7."],
+        ["1 dizaine = 10 unités.","عشرة واحدة = 10 وحدات."],
+        ["Je lis : 20 vingt, 30 trente, 40 quarante, 50 cinquante, 60 soixante, 70 soixante-dix, 80 quatre-vingts, 90 quatre-vingt-dix, 100 cent.","أقرأ: 20 vingt، 30 trente، 40 quarante، 50 cinquante، 60 soixante، 70 soixante-dix، 80 quatre-vingts، 90 quatre-vingt-dix، 100 cent."]],
+ words:[["Chiffre|رقم"],["Nombre|عدد"],["Dizaine|عشرة (عشرات)"],["Unité|وحدة"],["Cent|مئة"]],
+ ex:[["2️⃣3️⃣","23|ثلاثة وعشرون","2 dizaines + 3 unités|2 عشرات + 3 وحدات","a"],["4️⃣7️⃣","47|سبعة وأربعون","4 dizaines + 7 unités|4 عشرات + 7 وحدات","a"],["7️⃣0️⃣","70 soixante-dix|سبعون","7 dizaines + 0 unité|7 عشرات + 0 وحدة","b"],["💯","100 cent|مئة","10 dizaines|10 عشرات","b"]],
+ talk:["Dis un nombre à deux chiffres : combien a-t-il de dizaines et d'unités ?","يقول عددًا من رقمين ثم يحدد عدد عشراته ووحداته."],
+ xs:[
+  mcq("Dans 47, combien y a-t-il de dizaines ?","كم عشرة في العدد 47؟",4,[7,40,11],"47 = 4 dizaines + 7 unités.|47 = 4 عشرات + 7 وحدات."),
+  mcq("58 = … dizaines + … unités","58 = … عشرات + … وحدات",'5 et 8',['8 et 5','58 et 0','13 et 5'],"58 = 50 + 8, donc 5 dizaines et 8 unités.|58 = 50 + 8"),
+  mcq("40 + 6 = ?","أحسب الناتج.",46,[64,10,406],"40 + 6 = 46."),
+  mcq("3 dizaines = … unités","3 عشرات = … وحدة",30,[3,13,300],"1 dizaine = 10 unités, donc 3 dizaines = 30 unités.|عشرة واحدة = 10 وحدات"),
+  mcq("Quel nombre s'écrit « soixante-dix » ?","أي عدد يُكتب «soixante-dix»؟",70,[60,17,71],"soixante-dix = 70.|soixante-dix = 70"),
+  mcq("Quel nombre s'écrit « quatre-vingts » ?","أي عدد يُكتب «quatre-vingts»؟",80,[40,84,20],"quatre-vingts = 80.|quatre-vingts = 80")
+ ]},
+
+{id:"n2",u:0,n:"Les nombres · Leçon 2",em:"⚖️",fr:"Comparer et ranger les nombres",ar:"مقارنة الأعداد وترتيبها",
+ q:["Sami a 45 billes et Nada en a 38. Qui en a le plus ?","عند سامي 45 كرة وعند ندى 38. من عنده أكثر؟"],
+ s:["Sami en a plus : 45 est plus grand que 38.","سامي عنده أكثر: 45 أكبر من 38."],
+ learn:[["Pour comparer deux nombres, je regarde d'abord les dizaines. S'il y a les mêmes dizaines, je regarde les unités.","لمقارنة عددين أنظر أولًا إلى العشرات. وإذا تساوت العشرات أنظر إلى الوحدات."],
+        ["Les signes : > plus grand que, < plus petit que, = égal.","الإشارات: > أكبر من، < أصغر من، = يساوي."],
+        ["Astuce : la bouche ouverte du signe regarde toujours le plus grand nombre.","نصيحة: الفم المفتوح للإشارة يتجه دائمًا نحو العدد الأكبر."],
+        ["Ranger du plus petit au plus grand, c'est l'ordre croissant. Du plus grand au plus petit, c'est l'ordre décroissant.","الترتيب من الأصغر إلى الأكبر هو الترتيب التصاعدي، ومن الأكبر إلى الأصغر هو الترتيب التنازلي."]],
+ words:[["Comparer|يقارن"],["Plus grand|أكبر"],["Plus petit|أصغر"],["Égal|يساوي"],["Ranger|يرتّب"]],
+ ex:[["🔼","45 > 38|45 أكبر من 38","Plus grand|أكبر","a"],["🔽","27 < 72|27 أصغر من 72","Plus petit|أصغر","b"],["🟰","60 = 60|60 يساوي 60","Égal|يساوي",""]],
+ talk:["Donne deux nombres. Qui est le plus grand ? Pourquoi ?","يعطيه عددين ويسأله: أيهما أكبر؟ ولماذا؟"],
+ xs:[
+  {t:"s",p:"Je compare le premier nombre au second.",pa:"أقارن العدد الأول بالثاني.",c:CMP,i:[["45 et 38",0],["27 et 72",1],["60 et 60",2],["19 et 91",1],["88 et 80",0],["53 et 53",2]]},
+  {t:"o",p:"Je range du plus petit au plus grand.",pa:"أرتب من الأصغر إلى الأكبر.",o:["12","28","45","90"],w:"12 < 28 < 45 < 90|12 ، 28 ، 45 ، 90"},
+  {t:"o",p:"Je range du plus grand au plus petit.",pa:"أرتب من الأكبر إلى الأصغر.",o:["87","64","39","5"],w:"87 > 64 > 39 > 5|87 ، 64 ، 39 ، 5"},
+  mcq("Quel est le plus grand nombre : 56, 65 ou 49 ?","ما هو أكبر عدد: 56 أم 65 أم 49؟",65,[56,49,"Ils sont égaux"],"65 a 6 dizaines : c'est le plus grand.|65 فيه 6 عشرات: هو الأكبر.")
+ ]},
+
+{id:"n3",u:0,n:"Les nombres · Leçon 3",em:"🔀",fr:"Les nombres pairs et impairs",ar:"الأعداد الزوجية والفردية",
+ q:["Peut-on partager 8 bonbons en deux parts égales ? Et 7 bonbons ?","هل يمكن توزيع 8 حلوى على اثنين بالتساوي؟ وماذا عن 7؟"],
+ s:["8 oui, 7 non : il en reste un.","8 نعم، 7 لا: تبقى واحدة."],
+ learn:[["Un nombre pair se partage en deux parts égales. Il se termine par 0, 2, 4, 6 ou 8.","العدد الزوجي يُقسم إلى نصفين متساويين، وينتهي بـ 0 أو 2 أو 4 أو 6 أو 8."],
+        ["Un nombre impair ne se partage pas en deux parts égales. Il se termine par 1, 3, 5, 7 ou 9.","العدد الفردي لا يُقسم إلى نصفين متساويين، وينتهي بـ 1 أو 3 أو 5 أو 7 أو 9."],
+        ["Pour savoir, je regarde seulement le dernier chiffre.","لمعرفة ذلك أنظر فقط إلى الرقم الأخير."]],
+ words:[["Pair|زوجي"],["Impair|فردي"],["Dernier chiffre|الرقم الأخير"]],
+ ex:[["8️⃣","8 est pair|8 زوجي","Se termine par 8|ينتهي بـ 8","a"],["7️⃣","7 est impair|7 فردي","Se termine par 7|ينتهي بـ 7","b"],["3️⃣0️⃣","30 est pair|30 زوجي","Se termine par 0|ينتهي بـ 0","a"],["4️⃣5️⃣","45 est impair|45 فردي","Se termine par 5|ينتهي بـ 5","b"]],
+ talk:["Regarde le numéro d'une plaque ou d'une porte : est-il pair ou impair ?","ينظر إلى رقم باب أو لوحة ترقيم: هل هو زوجي أم فردي؟"],
+ xs:[
+  {t:"s",p:"Ce nombre est-il pair ou impair ?",pa:"هل هذا العدد زوجي أم فردي؟",c:["Pair|زوجي","Impair|فردي"],i:[["12",0],["17",1],["30",0],["45",1],["68",0],["91",1],["50",0],["73",1]]},
+  mcq("Quel nombre est impair ?","أي عدد فردي؟",57,[24,36,80],"57 se termine par 7 : il est impair.|57 ينتهي بـ 7 فهو فردي."),
+  mcq("Quel nombre est pair ?","أي عدد زوجي؟",64,[31,59,77],"64 se termine par 4 : il est pair.|64 ينتهي بـ 4 فهو زوجي.")
+ ]},
+
+{id:"c1",u:1,n:"Le calcul · Leçon 1",em:"➕",fr:"L'addition",ar:"الجمع",
+ q:["Sami a 27 billes. Il en gagne 15. Combien en a-t-il maintenant ?","عند سامي 27 كرة. ربح 15. كم أصبح عنده الآن؟"],
+ s:["Je dois additionner 27 et 15.","يجب أن أجمع 27 و 15."],
+ learn:[["Additionner, c'est ajouter. Le signe est +. Le résultat s'appelle la somme.","الجمع هو الإضافة. إشارته +. والناتج يسمى المجموع (la somme)."],
+        ["Sans retenue : 23 + 14. Les unités 3 + 4 = 7, les dizaines 2 + 1 = 3. Résultat : 37.","بدون احتفاظ: 23 + 14. الوحدات 3 + 4 = 7، العشرات 2 + 1 = 3. الناتج: 37."],
+        ["Avec retenue : 27 + 15. Les unités 7 + 5 = 12. J'écris 2 et je retiens 1 dizaine. Les dizaines 2 + 1 + 1 = 4. Résultat : 42.","مع احتفاظ: 27 + 15. الوحدات 7 + 5 = 12. أكتب 2 وأحتفظ بعشرة واحدة. العشرات 2 + 1 + 1 = 4. الناتج: 42."],
+        ["Je commence toujours par les unités.","أبدأ دائمًا بالوحدات."]],
+ words:[["Addition|الجمع"],["Somme|المجموع"],["Retenue|الاحتفاظ"],["Ajouter|يضيف"]],
+ ex:[["➕","23 + 14 = 37|23 + 14 = 37","Sans retenue|بدون احتفاظ","a"],["➕","27 + 15 = 42|27 + 15 = 42","Avec retenue|مع احتفاظ","b"],["🧮","48 + 36 = 84|48 + 36 = 84","Avec retenue|مع احتفاظ","b"]],
+ talk:["Pose-lui : « J'ai 18 DH et j'en reçois 7. Combien j'ai ? »","يسأله: «عندي 18 درهمًا وتلقيت 7. كم أصبح عندي؟»"],
+ xs:[
+  add(23,14),add(35,42),add(27,15),add(48,36),
+  {t:"s",p:"Cette addition est-elle sans retenue ou avec retenue ?",pa:"هذا الجمع بدون احتفاظ أم مع احتفاظ؟",c:["Sans retenue|بدون احتفاظ","Avec retenue|مع احتفاظ"],i:[["23 + 14",0],["27 + 15",1],["35 + 42",0],["48 + 36",1],["52 + 19",1],["41 + 28",0]]},
+  mcq("Comment s'appelle le résultat d'une addition ?","ماذا نسمي ناتج الجمع؟","La somme|المجموع".split("|")[0],["La différence","Le produit"],"Le résultat d'une addition est la somme.|ناتج الجمع هو المجموع.")
+ ]},
+
+{id:"c2",u:1,n:"Le calcul · Leçon 2",em:"➖",fr:"La soustraction",ar:"الطرح",
+ q:["Nada a 52 DH. Elle dépense 27 DH. Combien lui reste-t-il ?","عند ندى 52 درهمًا. أنفقت 27. كم بقي لها؟"],
+ s:["Je dois retirer 27 de 52.","يجب أن أطرح 27 من 52."],
+ learn:[["Soustraire, c'est retirer. Le signe est −. Le résultat s'appelle la différence.","الطرح هو الإنقاص. إشارته −. والناتج يسمى الفرق (la différence)."],
+        ["Sans retenue : 48 − 23. Les unités 8 − 3 = 5, les dizaines 4 − 2 = 2. Résultat : 25.","بدون استلاف: 48 − 23. الوحدات 8 − 3 = 5، العشرات 4 − 2 = 2. الناتج: 25."],
+        ["Avec retenue : 52 − 27. Je ne peux pas faire 2 − 7. J'échange 1 dizaine contre 10 unités : 12 − 7 = 5. Puis 4 − 2 = 2. Résultat : 25.","مع استلاف: 52 − 27. لا أستطيع 2 − 7. أبدّل عشرة واحدة بـ 10 وحدات: 12 − 7 = 5. ثم 4 − 2 = 2. الناتج: 25."],
+        ["Je vérifie avec une addition : 25 + 27 = 52.","أتحقق بعملية جمع: 25 + 27 = 52."]],
+ words:[["Soustraction|الطرح"],["Différence|الفرق"],["Retirer|ينقص"],["Il reste|بقي"]],
+ ex:[["➖","48 − 23 = 25|48 − 23 = 25","Sans retenue|بدون استلاف","a"],["➖","52 − 27 = 25|52 − 27 = 25","Avec retenue|مع استلاف","b"],["➖","60 − 18 = 42|60 − 18 = 42","Avec retenue|مع استلاف","b"]],
+ talk:["Demande : « J'avais 30 DH, j'ai acheté un cahier à 12 DH. Combien me reste-t-il ? »","يسأله: «كان عندي 30 درهمًا واشتريت دفترًا بـ 12. كم بقي؟»"],
+ xs:[
+  sub(48,23),sub(75,32),sub(52,27),sub(60,18),
+  {t:"s",p:"Cette soustraction est-elle sans retenue ou avec retenue ?",pa:"هذا الطرح بدون استلاف أم مع استلاف؟",c:["Sans retenue|بدون استلاف","Avec retenue|مع استلاف"],i:[["48 − 23",0],["52 − 27",1],["75 − 32",0],["60 − 18",1],["86 − 41",0],["71 − 39",1]]},
+  mcq("Comment s'appelle le résultat d'une soustraction ?","ماذا نسمي ناتج الطرح؟","La différence",["La somme","Le produit"],"Le résultat d'une soustraction est la différence.|ناتج الطرح هو الفرق.")
+ ]},
+
+{id:"c3",u:1,n:"Le calcul · Leçon 3",em:"✖️",fr:"Double, moitié et multiplication",ar:"الضعف والنصف والضرب",
+ q:["Il y a 4 paquets de 3 biscuits. Combien de biscuits en tout ?","هناك 4 علب في كل واحدة 3 بسكويتات. كم بسكويتة في المجموع؟"],
+ s:["Je peux additionner : 3 + 3 + 3 + 3.","يمكنني الجمع: 3 + 3 + 3 + 3."],
+ learn:[["Le double d'un nombre, c'est ce nombre ajouté à lui-même. Le double de 6 est 12 (6 + 6).","ضعف عدد هو جمعه مع نفسه. ضعف 6 هو 12 (6 + 6)."],
+        ["La moitié d'un nombre, c'est le partager en 2 parts égales. La moitié de 10 est 5.","نصف عدد هو قسمته إلى جزأين متساويين. نصف 10 هو 5."],
+        ["Multiplier, c'est additionner plusieurs fois le même nombre. 4 × 3 = 3 + 3 + 3 + 3 = 12. Le signe est ×.","الضرب هو جمع العدد نفسه عدة مرات. 4 × 3 = 3 + 3 + 3 + 3 = 12. وإشارته ×."],
+        ["Tables faciles : ×2 (le double), ×10 (j'ajoute un zéro), ×5 (le résultat finit par 0 ou 5).","جداول سهلة: ×2 (الضعف)، ×10 (أضيف صفرًا)، ×5 (الناتج ينتهي بـ 0 أو 5)."]],
+ words:[["Double|الضعف"],["Moitié|النصف"],["Multiplication|الضرب"],["Fois|مرّات"]],
+ ex:[["2️⃣","Le double de 6 est 12|ضعف 6 هو 12","6 + 6","a"],["✂️","La moitié de 10 est 5|نصف 10 هو 5","10 en 2 parts|10 إلى جزأين","b"],["✖️","4 × 3 = 12|4 × 3 = 12","3 + 3 + 3 + 3","a"],["🔟","6 × 10 = 60|6 × 10 = 60","Un zéro de plus|صفر إضافي","b"]],
+ talk:["Dis-lui : « 2 paquets de 5 stylos : combien de stylos ? »","يقول له: «علبتان في كل واحدة 5 أقلام: كم قلمًا؟»"],
+ xs:[
+  dbl(7),dbl(15),moi(12),moi(20),mul(3,5),mul(4,2),mul(6,10),mul(5,5),
+  {t:"s",p:"Ce calcul est-il un double ou une moitié ?",pa:"هل هذا الحساب ضعف أم نصف؟",c:["Un double|ضعف","Une moitié|نصف"],i:[["8 + 8",0],["Partager 14 en 2 parts égales",1],["9 + 9",0],["Partager 18 en 2 parts égales",1]]}
+ ]},
+
+{id:"c4",u:1,n:"Le calcul · Leçon 4",em:"🧠",fr:"Résoudre un problème",ar:"حل مسألة",
+ q:["Sami a 12 billes. Il en gagne 8. Comment savoir combien il en a ?","عند سامي 12 كرة. ربح 8. كيف أعرف كم أصبح عنده؟"],
+ s:["Je lis le problème, puis je choisis une opération.","أقرأ المسألة ثم أختار عملية."],
+ learn:[["Je lis bien le problème. Je cherche ce que je sais (les données) et ce que je cherche (la question).","أقرأ المسألة جيدًا. أبحث عمّا أعرفه (المعطيات) وعمّا أبحث عنه (السؤال)."],
+        ["« En tout », « ensemble », « de plus » : j'additionne (+).","«في المجموع»، «معًا»، «أكثر»: أجمع (+)."],
+        ["« Il reste », « il en manque », « de moins » : je soustrais (−).","«بقي»، «ينقص»، «أقل»: أطرح (−)."],
+        ["« Chaque », « paquets égaux » : je multiplie (×).","«كل»، «مجموعات متساوية»: أضرب (×)."],
+        ["J'écris la réponse avec une phrase.","أكتب الجواب في جملة كاملة."]],
+ words:[["Problème|مسألة"],["Opération|عملية"],["En tout|في المجموع"],["Il reste|بقي"],["Réponse|الجواب"]],
+ ex:[["➕","12 billes + 8 billes|12 كرة + 8 كرات","Addition : en tout|جمع","a"],["➖","20 DH − 7 DH|20 درهمًا − 7","Soustraction : il reste|طرح","b"],["✖️","4 paquets de 5|4 علب في كل واحدة 5","Multiplication : chaque|ضرب",""]],
+ talk:["Invente un petit problème avec des dirhams et demande-lui quelle opération choisir.","يخترع مسألة صغيرة بالدراهم ويسأله أي عملية يختار."],
+ xs:[
+  {t:"s",p:"Quelle opération je choisis ?",pa:"أي عملية أختار؟",c:["Addition +|جمع","Soustraction −|طرح","Multiplication ×|ضرب"],i:[["Sami a 12 billes et en gagne 8. Combien en a-t-il en tout ?|",0],["Nada a 20 DH et dépense 7 DH. Combien lui reste-t-il ?|",1],["Un paquet contient 5 biscuits. Combien y en a-t-il dans 4 paquets ?|",2],["Il y a 15 élèves et 6 partent. Combien en reste-t-il ?|",1],["Yassine lit 9 pages, puis 14 pages. Combien de pages en tout ?|",0]]},
+  mcq("Sami a 12 billes. Il en gagne 8. Combien en a-t-il en tout ?","كم كرة عند سامي في المجموع؟",20,[4,96,18],"12 + 8 = 20.|12 + 8 = 20"),
+  mcq("Nada a 20 DH. Elle dépense 7 DH. Combien lui reste-t-il ?","كم بقي لندى؟",13,[27,14,12],"20 − 7 = 13 DH.|20 − 7 = 13"),
+  mcq("4 paquets de 5 biscuits. Combien de biscuits ?","كم بسكويتة؟",20,[9,15,25],"4 × 5 = 20.|4 × 5 = 20"),
+  mcq("15 élèves, 6 partent. Combien en reste-t-il ?","كم تلميذًا بقي؟",9,[21,10,8],"15 − 6 = 9.|15 − 6 = 9")
+ ]},
+
+{id:"g1",u:2,n:"Géométrie · Leçon 1",em:"🔷",fr:"Les figures géométriques",ar:"الأشكال الهندسية",
+ q:["Quelle est la forme d'une assiette ? D'un cahier ? D'un panneau « attention » ?","ما شكل الصحن؟ وشكل الدفتر؟ وشكل لوحة «انتبه»؟"],
+ s:["L'assiette est ronde, le cahier a 4 côtés, le panneau a 3 côtés.","الصحن مستدير، والدفتر له 4 أضلاع، واللوحة لها 3 أضلاع."],
+ learn:[["Le carré a 4 côtés de même longueur et 4 sommets.","المربع له 4 أضلاع متساوية الطول و 4 رؤوس."],
+        ["Le rectangle a 4 côtés et 4 sommets. Ses côtés opposés ont la même longueur.","المستطيل له 4 أضلاع و 4 رؤوس، وكل ضلعين متقابلين متساويان."],
+        ["Le triangle a 3 côtés et 3 sommets.","المثلث له 3 أضلاع و 3 رؤوس."],
+        ["Le cercle est rond : il n'a ni côté ni sommet.","الدائرة مستديرة: ليس لها أضلاع ولا رؤوس."]],
+ words:[["Carré|مربع"],["Rectangle|مستطيل"],["Triangle|مثلث"],["Cercle|دائرة"],["Côté|ضلع"],["Sommet|رأس"]],
+ ex:[["🟦","Le carré|المربع","4 côtés égaux|4 أضلاع متساوية","a"],["▭","Le rectangle|المستطيل","4 côtés, 4 sommets|4 أضلاع و 4 رؤوس","a"],["🔺","Le triangle|المثلث","3 côtés, 3 sommets|3 أضلاع و 3 رؤوس","b"],["🔵","Le cercle|الدائرة","Ni côté ni sommet|بلا أضلاع ولا رؤوس","b"]],
+ talk:["Cherche dans la maison 3 objets ronds, 3 rectangles, 1 triangle.","يبحث في البيت عن 3 أشياء مستديرة و 3 مستطيلات ومثلث."],
+ xs:[
+  mcq("Combien de côtés a un triangle ?","كم ضلعًا للمثلث؟",3,[4,2,0],"Un triangle a 3 côtés.|المثلث له 3 أضلاع."),
+  mcq("Quelle figure a 4 côtés égaux ?","أي شكل له 4 أضلاع متساوية؟","Le carré",["Le triangle","Le cercle"],"Le carré a 4 côtés de même longueur.|المربع له 4 أضلاع متساوية."),
+  mcq("Combien de sommets a un cercle ?","كم رأسًا للدائرة؟",0,[1,2,4],"Un cercle n'a pas de sommet.|الدائرة ليس لها رؤوس."),
+  {t:"s",p:"Quelle figure ressemble à cet objet ?",pa:"أي شكل يشبه هذا الشيء؟",c:["Cercle|دائرة","Rectangle|مستطيل","Triangle|مثلث","Carré|مربع"],i:[["🍽️ Une assiette ronde|صحن مستدير",0],["📓 Un cahier|دفتر",1],["⚠️ Un panneau « attention »|لوحة «انتبه»",2],["🪟 Une fenêtre carrée|نافذة مربعة",3],["🪙 Une pièce de monnaie|قطعة نقدية",0],["🚪 Une porte|باب",1]]}
+ ]},
+
+{id:"g2",u:2,n:"Mesures · Leçon 1",em:"💰",fr:"La monnaie : le dirham",ar:"النقود: الدرهم",
+ q:["Un cahier coûte 7 DH. Je donne un billet de 10 DH. Combien me rend le vendeur ?","دفتر ثمنه 7 دراهم. أعطيت ورقة من 10 دراهم. كم يرجع لي البائع؟"],
+ s:["Il me rend 3 DH.","يرجع لي 3 دراهم."],
+ learn:[["La monnaie du Maroc est le dirham (DH).","عملة المغرب هي الدرهم (DH)."],
+        ["Il y a des pièces : 1 DH, 2 DH, 5 DH, 10 DH. Et des billets : 20 DH, 50 DH, 100 DH, 200 DH.","هناك قطع نقدية: 1، 2، 5، 10 دراهم. وأوراق نقدية: 20، 50، 100، 200 درهم."],
+        ["1 DH = 100 centimes.","درهم واحد = 100 سنتيم."],
+        ["Pour rendre la monnaie, je fais une soustraction : ce que je donne − le prix.","لحساب ما يُرجَع لي أطرح: ما أعطيته − الثمن."]],
+ words:[["Dirham|درهم"],["Pièce|قطعة نقدية"],["Billet|ورقة نقدية"],["Prix|الثمن"],["Rendre la monnaie|يرجع الباقي"]],
+ ex:[["🪙","5 DH + 2 DH + 1 DH = 8 DH|8 دراهم","Des pièces|قطع نقدية","a"],["💵","50 DH − 35 DH = 15 DH|الباقي 15 درهمًا","Rendre la monnaie|الباقي","b"],["🛒","2 stylos à 4 DH = 8 DH|ثمن قلمين 8 دراهم","Multiplication|ضرب","a"]],
+ talk:["Joue au magasin : il vend un objet à 6 DH, tu paies avec 10 DH. Combien te rend-il ?","لعبة البقال: يبيعك شيئًا بـ 6 دراهم وتدفع 10 دراهم. كم يرجع لك؟"],
+ xs:[
+  mcq("Pièces : 5 DH + 2 DH + 1 DH = ?","قطع نقدية: 5 + 2 + 1 = ؟",8,[7,9,10],"5 + 2 + 1 = 8 DH.|5 + 2 + 1 = 8"),
+  mcq("Un cahier coûte 7 DH. Je donne 10 DH. Que me rend-on ?","دفتر بـ 7 دراهم، أعطيت 10. كم يرجعون لي؟",3,[17,4,2],"10 − 7 = 3 DH.|10 − 7 = 3"),
+  mcq("Deux stylos à 4 DH chacun coûtent combien ?","قلمان بـ 4 دراهم لكل واحد. كم ثمنهما؟",8,[6,4,2],"2 × 4 = 8 DH.|2 × 4 = 8"),
+  mcq("Je paie avec un billet de 50 DH des gâteaux à 35 DH. Combien me rend-on ?","أدفع 50 درهمًا ثمن حلوى بـ 35. كم يرجعون لي؟",15,[85,25,5],"50 − 35 = 15 DH.|50 − 35 = 15"),
+  {t:"s",p:"Est-ce une pièce ou un billet ?",pa:"هل هي قطعة نقدية أم ورقة؟",c:["Une pièce|قطعة","Un billet|ورقة"],i:[["1 DH",0],["50 DH",1],["10 DH",0],["200 DH",1],["5 DH",0],["100 DH",1]]}
+ ]},
+
+{id:"g3",u:2,n:"Mesures · Leçon 2",em:"🕒",fr:"L'heure",ar:"الساعة",
+ q:["L'école commence quand la petite aiguille est sur 8. Quelle heure est-il ?","تبدأ المدرسة عندما تكون الإبرة الصغيرة على 8. كم الساعة؟"],
+ s:["Il est 8 heures.","الساعة الثامنة."],
+ learn:[["La petite aiguille montre les heures. La grande aiguille montre les minutes.","الإبرة الصغيرة تدل على الساعات، والكبيرة تدل على الدقائق."],
+        ["Quand la grande aiguille est sur 12, c'est une heure pile : 3 h.","عندما تكون الكبيرة على 12 تكون الساعة تامة: 3 h."],
+        ["Quand la grande aiguille est sur 6, c'est « et demie » : 3 h 30.","عندما تكون الكبيرة على 6 تكون «ونصف»: 3 h 30."],
+        ["Quand elle est sur 3, c'est « et quart » : 3 h 15. Sur 9, c'est « moins le quart » : 3 h 45.","عندما تكون على 3 تكون «وربع»: 3 h 15. وعلى 9 تكون «إلا ربع»: 3 h 45."],
+        ["1 heure = 60 minutes. Une demi-heure = 30 minutes.","ساعة واحدة = 60 دقيقة. نصف ساعة = 30 دقيقة."]],
+ words:[["Heure|ساعة"],["Minute|دقيقة"],["Aiguille|عقرب"],["Demi-heure|نصف ساعة"],["Quart|ربع"]],
+ ex:[["🕒","3 h pile|الثالثة تمامًا","Grande aiguille sur 12|الكبيرة على 12","a"],["🕞","3 h 30|الثالثة والنصف","Grande aiguille sur 6|الكبيرة على 6","b"],["⏱️","1 h = 60 min|ساعة = 60 دقيقة","À retenir|للحفظ",""]],
+ talk:["Montre-lui l'heure sur une horloge : petite aiguille ? grande aiguille ?","يريه الساعة على ساعة حائط: أين الإبرة الصغيرة؟ والكبيرة؟"],
+ xs:[
+  mcq("🕒 Quelle heure est-il ?","كم الساعة؟","3 h",["12 h","6 h","9 h"],"La grande aiguille est sur 12 : 3 h pile.|الكبيرة على 12: الثالثة تمامًا."),
+  mcq("🕞 Quelle heure est-il ?","كم الساعة؟","3 h 30",["3 h","6 h 15","4 h 30"],"Grande aiguille sur 6 : et demie.|الكبيرة على 6: ونصف."),
+  mcq("La petite aiguille est sur 7 et la grande sur 6. Quelle heure ?","الصغيرة على 7 والكبيرة على 6. كم الساعة؟","7 h 30",["6 h 35","7 h","7 h 15"],"Sur 6 : et demie, donc 7 h 30.|على 6: ونصف."),
+  mcq("La petite aiguille est sur 8 et la grande sur 3. Quelle heure ?","الصغيرة على 8 والكبيرة على 3. كم الساعة؟","8 h 15",["8 h 30","3 h 08","8 h 45"],"Sur 3 : et quart, donc 8 h 15.|على 3: وربع."),
+  mcq("1 heure = … minutes","ساعة = … دقيقة",60,[30,100,12],"1 heure = 60 minutes.|ساعة = 60 دقيقة"),
+  mcq("Une demi-heure = … minutes","نصف ساعة = … دقيقة",30,[15,60,50],"La moitié de 60 est 30.|نصف 60 هو 30")
+ ]},
+
+{id:"g4",u:2,n:"Mesures · Leçon 3",em:"📏",fr:"Les longueurs",ar:"الأطوال",
+ q:["Avec quoi mesure-t-on la longueur d'un crayon ? Et celle de la classe ?","بماذا نقيس طول قلم الرصاص؟ وطول القسم؟"],
+ s:["Le crayon se mesure avec une règle. La classe se mesure avec un mètre.","القلم يُقاس بالمسطرة، والقسم يُقاس بالمتر."],
+ learn:[["Pour mesurer une longueur, j'utilise une règle graduée ou un mètre.","لقياس طول أستعمل مسطرة مدرجة أو متر."],
+        ["Le centimètre (cm) sert pour les petits objets : un crayon, une gomme, un cahier.","السنتيمتر (cm) للأشياء الصغيرة: قلم، ممحاة، دفتر."],
+        ["Le mètre (m) sert pour les grandes longueurs : la classe, la cour, une porte.","المتر (m) للأطوال الكبيرة: القسم، الساحة، الباب."],
+        ["1 m = 100 cm.","1 متر = 100 سنتيمتر."]],
+ words:[["Longueur|الطول"],["Centimètre|سنتيمتر"],["Mètre|متر"],["Règle|مسطرة"]],
+ ex:[["✏️","Un crayon|قلم رصاص","≈ 15 cm|حوالي 15 سنتيمترًا","a"],["📓","Un cahier|دفتر","≈ 24 cm|حوالي 24 سنتيمترًا","a"],["🚪","Une porte|باب","≈ 2 m|حوالي متران","b"],["🏫","La classe|القسم","≈ 8 m|حوالي 8 أمتار","b"]],
+ talk:["Mesure avec une règle un crayon, un livre, puis avec un mètre une pièce de la maison.","يقيس بالمسطرة قلمًا وكتابًا، ثم بالمتر غرفة في البيت."],
+ xs:[
+  {t:"s",p:"Quelle unité je choisis : cm ou m ?",pa:"أي وحدة أختار: سنتيمتر أم متر؟",c:["Centimètre (cm)|سنتيمتر","Mètre (m)|متر"],i:[["La longueur d'un crayon|طول قلم الرصاص",0],["La longueur de la classe|طول القسم",1],["La largeur d'une gomme|عرض ممحاة",0],["La hauteur d'une porte|ارتفاع باب",1],["La longueur d'un cahier|طول دفتر",0],["La longueur de la cour|طول الساحة",1]]},
+  mcq("1 m = … cm","1 متر = … سنتيمتر",100,[10,1000,50],"1 mètre = 100 centimètres.|متر = 100 سنتيمتر"),
+  mcq("2 m = … cm","2 متر = … سنتيمتر",200,[20,2,102],"2 × 100 = 200 cm.|2 × 100 = 200"),
+  mcq("Quel outil sert à mesurer un crayon ?","أي أداة تقيس قلمًا؟","La règle",["La balance","L'horloge"],"La règle graduée mesure les petites longueurs.|المسطرة تقيس الأطوال الصغيرة.")
+ ]}
+];
+const UNITS=[
+ {u:0,t:"Les nombres",ar:"الأعداد"},
+ {u:1,t:"Le calcul",ar:"الحساب"},
+ {u:2,t:"Géométrie et mesures",ar:"الهندسة والقياس"}
+];
+
+/* ---------- progression ---------- */
+const getP=()=>store.get();
+function saveScore(id,score,total){const p=getP();const best=p[id]||{s:0,t:total};if(score>=best.s)p[id]={s:score,t:total};store.set(p)}
+const starsOf=r=>!r?0:(r.s/r.t>=.9?3:r.s/r.t>=.6?2:1);
+const starEl=n=>h('div',{class:'stars','aria-label':n+' étoiles sur 3'},[1,2,3].map(i=>h('span',{class:i<=n?'':'off'},'★')));
+
+/* ---------- figure du corps ---------- */
+const JP={cou:[[100,64]],epaule:[[72,86],[128,86]],coude:[[48,134],[152,134]],poignet:[[34,180],[166,180]],hanche:[[84,182],[116,182]],genou:[[76,246],[124,246]],cheville:[[72,304],[128,304]]};
+function figure(onPick){
+  const L=[[100,62,100,176],[72,86,128,86],[84,182,116,182],[72,86,48,134],[48,134,34,180],[128,86,152,134],[152,134,166,180],[84,182,76,246],[76,246,72,304],[116,182,124,246],[124,246,128,304],[72,304,58,312],[128,304,142,312]];
+  const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 200 330');svg.setAttribute('class','fig');svg.setAttribute('role','group');svg.setAttribute('aria-label','Corps humain avec les articulations');
+  const hd=document.createElementNS(ns,'circle');hd.setAttribute('class','head');hd.setAttribute('cx',100);hd.setAttribute('cy',30);hd.setAttribute('r',20);svg.append(hd);
+  L.forEach(a=>{const l=document.createElementNS(ns,'line');['x1','y1','x2','y2'].forEach((k,i)=>l.setAttribute(k,a[i]));svg.append(l)});
+  const dots=[];
+  for(const k in JP)JP[k].forEach(([x,y])=>{const c=document.createElementNS(ns,'circle');c.setAttribute('class','j');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',9);c.setAttribute('tabindex','0');c.setAttribute('role','button');c.setAttribute('aria-label',J[k][0]);c.dataset.k=k;
+    const fire=()=>onPick(k,c);c.addEventListener('click',fire);c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fire()}});svg.append(c);dots.push(c)});
+  return {svg,dots};
+}
+
+/* ---------- exercices ---------- */
+function qEx(ex,cb){
+  let tries=0,done=false;const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});const box=h('div',{class:'opts'});
+  ex.o.forEach((o,i)=>{const b=h('button',{type:'button',class:'opt'},biS(o));b.addEventListener('click',()=>{
+    if(done||b.disabled)return;
+    if(i===ex.a){done=true;b.classList.add('ok');fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo ! '+(ex.w?sp(ex.w)[0]:''),'أحسنت! '+(ex.w?sp(ex.w)[1]:''))));cb(tries?0:1)}
+    else{tries++;b.classList.add('bad');b.disabled=true;fb.replaceChildren(h('div',{class:'m bad'},bi('Pas tout à fait. Essaie encore !','ليس تمامًا، حاول مرة أخرى!')))}
+  });box.append(b)});
+  return [bi(ex.p,ex.pa,'p'),box,fb];
+}
+function sEx(ex,cb){
+  const n=ex.i.length;let left=n,first=0;const rows=h('div');
+  ex.i.forEach(([lab,ci])=>{
+    let wrong=false,fin=false;const row=h('div',{class:'row'});const [f,a]=sp(lab);
+    const em=/^\p{Extended_Pictographic}/u.test(f)?f.match(/^(\p{Extended_Pictographic}️?)\s*/u):null;
+    const left_=h('div',{class:'lab'},em?h('span',{class:'e'},em[1]):null,bi(em?f.slice(em[0].length):f,a));
+    const opts=h('div',{class:'opts'});
+    ex.c.forEach((c,k)=>{const b=h('button',{type:'button',class:'opt'},biS(c));b.addEventListener('click',()=>{
+      if(fin||b.disabled)return;
+      if(k===ci){fin=true;b.classList.add('ok');row.classList.add('done');[...opts.children].forEach(x=>{if(x!==b)x.disabled=true});if(!wrong)first++;if(--left===0)cb(first/n)}
+      else{wrong=true;b.classList.add('bad');b.disabled=true}
+    });opts.append(b)});
+    row.append(left_,opts);rows.append(row);
+  });
+  return [bi(ex.p,ex.pa,'p'),rows];
+}
+function fEx(ex,cb){
+  let i=0,first=0,wrong=false;const prompt=h('div',{class:'p'});const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  const show=()=>{const [f,a]=J[ex.g[i]];prompt.replaceChildren(bi('Touche : '+f.toLowerCase(),'المس: '+a))};show();
+  const fig=figure((k,c)=>{
+    if(i>=ex.g.length)return;
+    if(k===ex.g[i]){if(!wrong)first++;wrong=false;fig.dots.filter(d=>d.dataset.k===k).forEach(d=>d.classList.add('ok'));i++;
+      if(i>=ex.g.length){prompt.replaceChildren(bi('Bravo, tu connais tes articulations !','أحسنت! أنت تعرف مفاصلك!'));fb.replaceChildren();cb(first/ex.g.length)}
+      else{fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo !','أحسنت!')));show()}}
+    else{wrong=true;c.classList.add('on');setTimeout(()=>c.classList.remove('on'),500);fb.replaceChildren(h('div',{class:'m bad'},bi('Ce n\'est pas celle-là. Essaie encore !','ليس هذا المفصل، حاول مرة أخرى!')))}
+  });
+  return [bi(ex.p,ex.pa,'p'),prompt,h('div',{style:'max-width:240px;margin:0 auto;width:100%'},fig.svg),fb];
+}
+
+function oEx(ex,cb){
+  const n=ex.o.length;let k=0,wrong=false;
+  const line=h('div',{class:'opts',style:'min-height:56px;border:2px dashed var(--line);border-radius:14px;padding:8px'});
+  const pool=h('div',{class:'opts'});const fb=h('div',{class:'fb',role:'status','aria-live':'polite'});
+  let order=ex.o.map((v,i)=>i);
+  let guard=0;do{order=order.sort(()=>Math.random()-.5)}while(n>1&&order.every((v,i)=>v===i)&&++guard<20);
+  order.forEach(i=>{const b=h('button',{type:'button',class:'opt'},biS(ex.o[i]));b.addEventListener('click',()=>{
+    if(b.disabled)return;
+    if(i===k){k++;b.disabled=true;b.hidden=true;line.append(h('span',{class:'opt ok',style:'cursor:default'},biS(ex.o[i])));fb.replaceChildren();
+      if(k===n){fb.replaceChildren(h('div',{class:'m ok'},bi('Bravo !','أحسنت!')));cb(wrong?0:1)}}
+    else{wrong=true;fb.replaceChildren(h('div',{class:'m bad'},bi("Ce n'est pas le bon ordre. Essaie encore !",'ليس الترتيب الصحيح، حاول مرة أخرى!')))}
+  });pool.append(b)});
+  return [bi(ex.p,ex.pa,'p'),h('div',{class:'k'},'Ma réponse · إجابتي'),line,h('div',{class:'k'},'À ranger · للترتيب'),pool,fb];
+}
+
+/* ---------- vues ---------- */
+const app=document.getElementById('app');
+const sec=(fr,ar,...kids)=>h('section',{class:'sec'},h('h2',null,h('span',null,fr),h('span',{class:'ar',lang:'ar',dir:'rtl'},ar)),...kids);
+const setAcc=(el,u)=>{const c=['u0','u1','u2'][u%3];el.style.setProperty('--acc','var(--'+c+')');el.style.setProperty('--accbg','var(--'+c+'bg)')};
+
+function home(){
+  const p=getP();const total=LESSONS.length;const doneN=LESSONS.filter(l=>p[l.id]).length;
+  const root=h('div',null,
+   h('div',{class:'hero'},h('h1',null,'Mathématiques CE1'),bi('Les nombres, le calcul, la géométrie et les mesures.','الأعداد والحساب والهندسة والقياس.'),
+     h('div',{class:'meter',role:'progressbar','aria-valuemin':0,'aria-valuemax':total,'aria-valuenow':doneN,'aria-label':'Leçons terminées'},h('b',{style:'width:'+(doneN/total*100)+'%'})),
+     h('div',{class:'sub'},doneN+' leçon'+(doneN>1?'s':'')+' sur '+total+' terminée'+(doneN>1?'s':''))));
+  UNITS.forEach(U=>{
+    const s=h('section',{class:'unit'});setAcc(s,U.u);
+    s.append(h('h2',null,h('span',null,U.t),h('span',{class:'ar',lang:'ar',dir:'rtl'},U.ar)));
+    const g=h('div',{class:'grid'});
+    LESSONS.filter(l=>l.u===U.u).forEach(l=>g.append(h('a',{class:'card',href:'#'+l.id},
+      h('span',{class:'em','aria-hidden':'true'},l.em),h('span',{class:'n'},l.n),h('h3',null,l.fr),h('span',{class:'ar',lang:'ar',dir:'rtl'},l.ar),starEl(starsOf(p[l.id])))));
+    s.append(g);root.append(s);
+  });
+  const d=getP().defi;
+  root.append(h('a',{class:'defi',href:'#defi'},h('span',{style:'font-size:2.4rem'},'🏆'),h('div',null,h('h2',null,'Défi final'),h('span',{class:'ar',lang:'ar',dir:'rtl'},'التحدي النهائي: 10 أسئلة من كل الدروس'),h('div',null,'10 questions mélangées de toutes les leçons.'),d?starEl(starsOf(d)):null),h('span',{class:'go'},'Jouer')));
+  return root;
+}
+
+function lesson(l,idx){
+  const root=h('div',{class:'lesson'});setAcc(root,l.u);
+  root.append(h('a',{class:'back',href:'#home'},'← Toutes les leçons'));
+  root.append(h('div',{class:'lh'},h('span',{class:'em','aria-hidden':'true'},l.em),h('div',null,h('div',{class:'n'},l.n),h('h1',null,l.fr),h('div',{class:'ar',lang:'ar',dir:'rtl'},l.ar))));
+  // découvrir
+  root.append(sec('Je découvre','أكتشف',h('div',{class:'tabs2'},
+    h('div',{class:'box'},h('div',{class:'lab'},h('span',null,'Je réfléchis'),h('span',{class:'ar'},'أتأمل')),bi(l.q[0],l.q[1])),
+    h('div',{class:'box'},h('div',{class:'lab'},h('span',null,'Je pense'),h('span',{class:'ar'},'أظن')),bi(l.s[0],l.s[1])))));
+  // retenir
+  const learn=h('div',{class:'learn'});
+  l.learn.forEach(([f,a])=>{const sp_=h('button',{type:'button',class:'pill','aria-label':'Écouter',style:'align-self:start;margin-top:6px'},'🔊 Écouter');sp_.addEventListener('click',()=>speak(f.replace(/[①②③④]/g,''),'fr-FR'));learn.append(h('div',{class:'box'},bi(f,a),sp_))});
+  root.append(sec('Je retiens','أتعلّم',learn));
+  // figure
+  if(l.fig){
+    const cap=h('div',{class:'cap'},bi('Touche un point rouge pour voir le nom de l\'articulation.','المس نقطة لترى اسم المفصل.'));
+    const fg=figure((k,c)=>{fg.dots.forEach(d=>d.classList.toggle('on',d.dataset.k===k));const [f,a]=J[k];cap.replaceChildren(h('div',{style:'font-family:var(--fd);font-size:1.5rem;font-weight:800'},f),h('div',{class:'ar',style:'font-size:1.3rem'},a));speak(f,'fr-FR')});
+    root.append(sec('Mon corps et mes articulations','جسمي ومفاصلي',h('div',{class:'box figbox'},h('div',null,fg.svg),cap)));
+  }
+  // mots
+  root.append(sec('Mots clés','كلمات مفتاحية',h('div',{class:'words'},l.words.map(([w])=>{const [f,a]=sp(w);const b=h('button',{type:'button',class:'word','aria-label':'Écouter '+f},h('span',{class:'sp','aria-hidden':'true'},'🔊'),bi(f,a));b.addEventListener('click',()=>speak(f,'fr-FR'));return b}))));
+  // exemples
+  const exg=h('div',{class:'exs'});
+  l.ex.forEach(([e,t,tag,k])=>{const [f,a]=sp(t);const tg=tag?sp(tag):null;exg.append(h('div',{class:'ex'},h('span',{class:'e','aria-hidden':'true'},e),h('div',{class:'t'},f),h('span',{class:'ar',lang:'ar',dir:'rtl'},a),tg?h('span',{class:'chip '+(k||'')},tg[0]+' · '+tg[1]):null))});
+  root.append(sec('Exemples','أمثلة',exg));
+  if(l.ex2){const g2=h('div',{class:'exs'});l.ex2.forEach(([e,t,tag,k])=>{const [f,a]=sp(t);const tg=sp(tag);g2.append(h('div',{class:'ex'},h('span',{class:'e'},e),h('div',{class:'t'},f),h('span',{class:'ar',lang:'ar',dir:'rtl'},a),h('span',{class:'chip '+(k||'')},tg[0]+' · '+tg[1])))});root.append(sec(l.ex2title[0],l.ex2title[1],g2))}
+  if(l.warn)root.append(h('div',{class:'note warn',style:'margin-top:18px'},h('div',{class:'lab'},'⚠️ Sécurité'),bi(l.warn[0],l.warn[1])));
+  if(l.fact)root.append(h('div',{class:'note fact',style:'margin-top:18px'},h('div',{class:'lab'},'Sais-tu que ? · هل تعلم؟'),bi(l.fact[0],l.fact[1])));
+  root.append(h('div',{class:'note',style:'margin-top:18px'},h('div',{class:'lab'},'Parlons-en · تحدّث معه'),bi(l.talk[0],l.talk[1])));
+  root.append(exercises(l.xs,l.id,idx));
+  return root;
+}
+
+function exercises(xs,id,idx,title){
+  const wrap=h('section',{class:'sec'});wrap.append(h('h2',null,h('span',null,'Je m\'entraîne'),h('span',{class:'ar',lang:'ar',dir:'rtl'},'أتدرّب')));
+  const res=[];const out=h('div');let n=0;
+  xs.forEach((ex,i)=>{
+    const card=h('div',{class:'xc'});card.append(h('div',{class:'k'},'Exercice '+(i+1)+' sur '+xs.length));
+    const f=ex.t==='q'?qEx:ex.t==='s'?sEx:ex.t==='o'?oEx:fEx;
+    const parts=f(ex,sc=>{res[i]=sc;card.classList.add('fin');if(res.filter(x=>x!==undefined).length===xs.length)finish()});
+    card.append(...parts);out.append(card);
+  });
+  const resultBox=h('div');
+  function finish(){
+    const score=res.reduce((a,b)=>a+b,0);const total=xs.length;
+    if(id==='defi'){const p=getP();const old=p.defi;if(!old||score>=old.s)p.defi={s:score,t:total};store.set(p)}else saveScore(id,score,total);
+    const st=starsOf({s:score,t:total});
+    const next=(typeof idx==='number'&&LESSONS[idx+1])?LESSONS[idx+1]:null;
+    const msg=st===3?['Super champion !','أنت بطل رائع!']:st===2?['Très bien !','أحسنت جدًا!']:['Bien joué, recommence pour avoir plus d\'étoiles !','أحسنت، أعد المحاولة لتحصل على نجوم أكثر!'];
+    resultBox.replaceChildren(h('div',{class:'result'},h('div',{class:'big','aria-label':st+' étoiles'},'★'.repeat(st)+'☆'.repeat(3-st)),h('h2',null,msg[0]),h('div',{class:'ar'},msg[1]),h('div',null,Math.round(score*10)/10+' / '+total),
+      h('div',{class:'btns'},h('button',{type:'button',class:'btn alt',onclick:()=>route(true)},'Recommencer · إعادة'),next?h('a',{class:'btn',href:'#'+next.id},'Leçon suivante →'):null,h('a',{class:'btn alt',href:'#home'},'Accueil'))));
+    resultBox.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  wrap.append(out,resultBox);return wrap;
+}
+
+function defi(){
+  const pool=[];LESSONS.forEach(l=>l.xs.forEach(x=>{if(x.t==='q')pool.push(x);else if(x.t==='s')x.i.forEach(it=>pool.push({t:'q',p:x.p,pa:x.pa,o:x.c.slice(),a:it[1],w:'',_label:it[0]}))}));
+  const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const pick=shuffle(pool).slice(0,10).map(x=>{if(!x._label)return x;const [f,a]=sp(x._label);const clean=s=>s.replace(/^\p{Extended_Pictographic}️?\s*/u,'');return Object.assign({},x,{p:x.p+' « '+clean(f)+' »',pa:a?x.pa+' «'+a+'»':x.pa,_label:null})});
+  const root=h('div',{class:'lesson'});setAcc(root,1);
+  root.append(h('a',{class:'back',href:'#home'},'← Toutes les leçons'));
+  root.append(h('div',{class:'lh'},h('span',{class:'em'},'🏆'),h('div',null,h('div',{class:'n'},'Toutes les leçons'),h('h1',null,'Défi final'),h('div',{class:'ar'},'التحدي النهائي: 10 أسئلة مختلطة'))));
+  root.append(exercises(pick,'defi',null));return root;
+}
+
+/* ---------- routage ---------- */
+function route(force){
+  const id=(location.hash||'#home').slice(1);
+  let v;
+  if(id==='defi')v=defi();
+  else{const i=LESSONS.findIndex(l=>l.id===id);v=i>=0?lesson(LESSONS[i],i):home()}
+  app.replaceChildren(v);
+  if(!force)window.scrollTo(0,0);else window.scrollTo(0,0);
+}
+addEventListener('hashchange',()=>route());
+const arBtn=document.getElementById('arBtn');
+let arOn=true;try{arOn=localStorage.getItem('maths-ar')!=='0'}catch(e){}
+function applyAr(){document.body.classList.toggle('noar',!arOn);arBtn.setAttribute('aria-pressed',String(arOn))}
+arBtn.addEventListener('click',()=>{arOn=!arOn;try{localStorage.setItem('maths-ar',arOn?'1':'0')}catch(e){}applyAr()});
+applyAr();route();
+</script>
